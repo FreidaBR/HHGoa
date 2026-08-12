@@ -262,7 +262,7 @@ const FrameSelector = ({ members, teamName, generationMode, frameConfig, setFram
   };
 
   return (
-    <div className="flex flex-col w-full max-w-6xl mx-auto py-4 fade-in select-none">
+    <div className="flex w-full max-w-6xl flex-col py-4 fade-in select-none mx-auto">
       {/* Header */}
       <div className="text-center mb-8">
         <div className="text-pink font-mono text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--accent-pink)' }}>
@@ -372,7 +372,7 @@ const FrameSelector = ({ members, teamName, generationMode, frameConfig, setFram
         </div>
 
         {/* Right Column: Live Badge Canvas Preview */}
-        <div className="lg:col-span-7 flex flex-col gap-6 sticky top-6">
+        <div className="lg:col-span-7 lg:sticky lg:top-4 lg:self-start flex flex-col gap-6">
           <div className="dark-card neo-shadow-lg p-6 flex flex-col items-center" style={{ borderRadius: '24px' }}>
             
             {/* Squad Teammate Selector (if squad mode and members > 1) */}

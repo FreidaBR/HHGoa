@@ -2,15 +2,15 @@ import React from 'react';
 
 const TeamPreview = ({ members, teamName }) => {
   return (
-    <div 
-      className="neo-border flex flex-col gap-4 mt-6" 
-      style={{ 
-        backgroundColor: '#042e1d', 
+    <div
+      className="neo-border squad-preview-col flex flex-col gap-4"
+      style={{
+        backgroundColor: '#042e1d',
         borderColor: '#0a2418',
         borderWidth: '3px',
         borderRadius: '16px',
         boxShadow: '4px 4px 0px 0px #0a2418',
-        padding: '24px'
+        padding: '24px',
       }}
     >
       {/* Header */}

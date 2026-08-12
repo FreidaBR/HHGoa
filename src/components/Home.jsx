@@ -1,14 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { soundFX } from '../utils/sound';
 
-// Detailed Palm Tree Vectors matching attached images
 const LeftPalmTree = () => (
-  <svg viewBox="0 0 280 600" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full object-contain pointer-events-none">
-    {/* Trunk */}
+  <svg viewBox="0 0 280 600" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-full w-full pointer-events-none">
     <path d="M40 600 C80 400 60 200 160 80" stroke="#041E12" strokeWidth="18" strokeLinecap="round" />
     <path d="M40 600 C80 400 60 200 160 80" stroke="#E5A93C" strokeWidth="4" strokeDasharray="12 12" strokeLinecap="round" />
-    
-    {/* Palm Fronds */}
     <path d="M160 80 C110 30 20 50 0 100 C40 90 100 85 160 80 Z" fill="#145A32" stroke="#E5A93C" strokeWidth="2"/>
     <path d="M160 80 C210 20 270 40 280 90 C240 80 190 80 160 80 Z" fill="#1E8449" stroke="#E5A93C" strokeWidth="2"/>
     <path d="M160 80 C100 -10 180 -30 240 0 C190 20 170 50 160 80 Z" fill="#27AE60" stroke="#E5A93C" strokeWidth="2"/>
@@ -18,12 +14,9 @@ const LeftPalmTree = () => (
 );
 
 const RightPalmTree = () => (
-  <svg viewBox="0 0 280 600" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full object-contain pointer-events-none">
-    {/* Trunk */}
+  <svg viewBox="0 0 280 600" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-full w-full pointer-events-none">
     <path d="M240 600 C200 400 220 200 120 80" stroke="#041E12" strokeWidth="18" strokeLinecap="round" />
     <path d="M240 600 C200 400 220 200 120 80" stroke="#E5A93C" strokeWidth="4" strokeDasharray="12 12" strokeLinecap="round" />
-    
-    {/* Palm Fronds */}
     <path d="M120 80 C170 30 260 50 280 100 C240 90 180 85 120 80 Z" fill="#145A32" stroke="#E5A93C" strokeWidth="2"/>
     <path d="M120 80 C70 20 10 40 0 90 C40 80 90 80 120 80 Z" fill="#1E8449" stroke="#E5A93C" strokeWidth="2"/>
     <path d="M120 80 C180 -10 100 -30 40 0 C90 20 110 50 120 80 Z" fill="#27AE60" stroke="#E5A93C" strokeWidth="2"/>
@@ -32,7 +25,6 @@ const RightPalmTree = () => (
   </svg>
 );
 
-// Lotus Flower SVG Motif
 const LotusIcon = () => (
   <svg width="34" height="26" viewBox="0 0 50 38" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
     <path d="M25 2C20 12 12 18 2 22C12 28 20 30 25 36C30 30 38 28 48 22C38 18 30 12 25 2Z" fill="#ff2a85" stroke="#ffe600" strokeWidth="2"/>
@@ -41,25 +33,32 @@ const LotusIcon = () => (
   </svg>
 );
 
+const CountdownUnit = ({ value, label, accent = false }) => (
+  <div className="rounded border border-white/10 bg-white/10 p-2 text-center">
+    <div className={`font-mono text-xl font-black sm:text-2xl ${accent ? 'text-goa-pink' : 'text-goa-yellow'}`}>
+      {String(value).padStart(2, '0')}
+    </div>
+    <div className="font-mono text-[9px] uppercase text-white/70">{label}</div>
+  </div>
+);
+
 const Home = ({ navigateTo }) => {
   const [audioMuted, setAudioMuted] = useState(false);
-  const [timeLeft, setTimeLeft] = useState({ days: 77, hours: 14, mins: 32, secs: 10 });
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, mins: 0, secs: 0 });
 
-  // Countdown timer calculation to Oct 28 2026
   useEffect(() => {
     const targetDate = new Date('2026-10-28T09:00:00+05:30').getTime();
-    const interval = setInterval(() => {
-      const now = new Date().getTime();
-      const diff = Math.max(0, targetDate - now);
-      
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      const secs = Math.floor((diff % (1000 * 60)) / 1000);
-
-      setTimeLeft({ days, hours, mins, secs });
-    }, 1000);
-
+    const tick = () => {
+      const diff = Math.max(0, targetDate - Date.now());
+      setTimeLeft({
+        days: Math.floor(diff / (1000 * 60 * 60 * 24)),
+        hours: Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+        mins: Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)),
+        secs: Math.floor((diff % (1000 * 60)) / 1000),
+      });
+    };
+    tick();
+    const interval = setInterval(tick, 1000);
     return () => clearInterval(interval);
   }, []);
 
@@ -69,75 +68,65 @@ const Home = ({ navigateTo }) => {
   };
 
   const toggleSound = () => {
-    const isMuted = soundFX.toggleMute();
-    setAudioMuted(isMuted);
+    setAudioMuted(soundFX.toggleMute());
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col justify-between relative bg-[#07301c] text-white overflow-hidden selection:bg-[#ffe600] selection:text-black">
-      
-      {/* Background Palm Tree Graphics */}
-      <div className="absolute top-12 left-0 w-48 sm:w-72 md:w-80 h-full opacity-35 z-0 pointer-events-none">
+    <div className="home-shell retro-scanlines">
+      {/* Palm tree decorations */}
+      <div className="pointer-events-none absolute bottom-0 left-0 top-16 z-0 w-36 opacity-30 sm:w-56 md:w-72 lg:w-80">
         <LeftPalmTree />
       </div>
-      <div className="absolute top-12 right-0 w-48 sm:w-72 md:w-80 h-full opacity-35 z-0 pointer-events-none">
+      <div className="pointer-events-none absolute bottom-0 right-0 top-16 z-0 w-36 opacity-30 sm:w-56 md:w-72 lg:w-80">
         <RightPalmTree />
       </div>
 
-      {/* 1. TOP HEADER BAR matching Image 2 */}
-      <header 
-        className="w-full z-30 px-4 sm:px-8 py-3 flex items-center justify-between border-b-2 border-black shrink-0 relative" 
-        style={{ backgroundColor: '#041d11' }}
-      >
-        {/* Left Studio Clock Logo */}
-        <div className="flex items-center gap-3">
-          <div 
-            className="neo-border text-black px-3 py-1 flex flex-col items-center justify-center font-mono font-black shadow-md cursor-pointer hover:scale-105 transition-transform"
+      {/* Header */}
+      <header className="home-header">
+        <div className="flex min-w-0 shrink-0 items-center gap-2 sm:gap-3">
+          <div
+            className="neo-border flex cursor-pointer flex-col items-center justify-center px-3 py-1 font-mono font-black shadow-md transition-transform hover:scale-105"
             style={{ backgroundColor: '#ffe600', borderRadius: '6px' }}
             onClick={() => soundFX.playClick()}
           >
-            <span className="text-xs leading-none font-black" style={{ color: '#ff2a85' }}>2:41 PM</span>
-            <span className="text-[9px] tracking-widest leading-none mt-0.5 font-bold">STUDIO</span>
+            <span className="text-xs font-black leading-none text-goa-pink">2:41 PM</span>
+            <span className="mt-0.5 text-[9px] font-bold leading-none tracking-widest">STUDIO</span>
           </div>
-
-          {/* Sound Toggle Button */}
           <button
             onClick={toggleSound}
-            className="font-mono text-xs px-2.5 py-1 rounded bg-black/40 border border-white/20 hover:bg-black/70 transition-colors flex items-center gap-1.5"
+            className="hidden items-center gap-1.5 rounded border border-white/20 bg-black/40 px-2.5 py-1 font-mono text-xs transition-colors hover:bg-black/70 sm:flex"
             title="Toggle Sound Effects"
           >
-            <span>{audioMuted ? '🔇 Muted' : '🔊 Sound FX'}</span>
+            {audioMuted ? '🔇 Muted' : '🔊 Sound FX'}
           </button>
         </div>
 
-        {/* Center Header Title: HACKER ... गोवा ... HOUSE */}
-        <div className="flex items-center justify-center gap-2 sm:gap-5 flex-1 px-2">
+        <div className="flex min-w-0 flex-1 items-center justify-center gap-2 px-2 sm:gap-4">
           <div className="hidden md:block"><LotusIcon /></div>
-          
-          <div className="flex items-center justify-center gap-2 sm:gap-4 font-display uppercase tracking-widest text-[#ffe600]" style={{ fontSize: 'clamp(1.2rem, 3.5vw, 2.5rem)', textShadow: '2px 2px 0px #000' }}>
+          <div
+            className="font-display flex items-center justify-center gap-1.5 uppercase tracking-widest text-goa-yellow retro-text-shadow-sm sm:gap-3"
+            style={{ fontSize: 'clamp(1rem, 3vw, 2.5rem)' }}
+          >
             <span>HACKER</span>
-            <span 
-              className="px-2 py-0.5 rounded font-sans font-black rotate-[-4deg] inline-block shadow-lg"
+            <span
+              className="font-sans inline-block rotate-[-4deg] rounded px-1.5 py-0.5 font-black shadow-lg sm:px-2"
               style={{
-                backgroundColor: 'transparent',
                 color: '#ff2a85',
-                fontSize: 'clamp(1.3rem, 3.8vw, 2.7rem)',
+                fontSize: 'clamp(1.1rem, 3.2vw, 2.7rem)',
                 WebkitTextStroke: '1.5px #ffe600',
-                textShadow: '3px 3px 0px #000'
+                textShadow: '3px 3px 0px #000',
               }}
             >
               गोवा
             </span>
             <span>HOUSE</span>
           </div>
-
           <div className="hidden md:block"><LotusIcon /></div>
         </div>
 
-        {/* Right Action Button */}
-        <div>
-          <button 
-            className="goa-pattern-btn text-xs sm:text-sm px-4 sm:px-6 py-2 shadow-xl"
+        <div className="shrink-0">
+          <button
+            className="goa-pattern-btn whitespace-nowrap px-4 py-2 text-xs sm:px-6 sm:text-sm"
             onClick={() => handleStart('choose')}
           >
             CLAIM PASSPORT ↗
@@ -145,13 +134,11 @@ const Home = ({ navigateTo }) => {
         </div>
       </header>
 
-      {/* 2. MAIN HERO SECTION matching IMAGE 1 layout */}
-      <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-8 py-8 sm:py-12 z-20 flex flex-col justify-center">
-        
-        {/* Top Tagline Pill */}
-        <div className="mb-6 flex justify-start">
-          <div 
-            className="font-mono text-xs sm:text-sm font-black uppercase tracking-widest px-4 py-1.5 rounded-full neo-border-sm flex items-center gap-2 shadow-lg"
+      {/* Hero */}
+      <main className="home-main">
+        <div className="mb-5 flex justify-start sm:mb-6">
+          <div
+            className="retro-pill neo-border-sm shadow-lg"
             style={{ backgroundColor: '#074828', color: '#ffe600', borderColor: '#ffe600' }}
           >
             <span>✨</span>
@@ -159,52 +146,31 @@ const Home = ({ navigateTo }) => {
           </div>
         </div>
 
-        {/* Grid Layout matching Image 1: Big Headline on Left, Detailed Text & CTA on Right */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-          
-          {/* Left Column: Huge "BUILD YOUR ID HH GOA" text */}
-          <div className="lg:col-span-7 flex flex-col items-start select-none">
-            
-            {/* Line 1: BUILD */}
-            <h1 
-              className="font-display uppercase text-left w-full"
-              style={{
-                fontSize: 'clamp(3.5rem, 11vw, 135px)',
-                lineHeight: '0.85',
-                color: '#FAF6E9',
-                WebkitTextStroke: '2px #041E12',
-                textShadow: '5px 5px 0px rgba(0,0,0,0.9)',
-                letterSpacing: '0.02em'
-              }}
+        <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12 lg:gap-10">
+          {/* Left: headline */}
+          <div className="select-none lg:col-span-7">
+            <h1
+              className="font-display w-full text-left uppercase leading-[0.85] text-[#FAF6E9] retro-text-shadow text-stroke-dark"
+              style={{ fontSize: 'clamp(3rem, 10vw, 130px)', letterSpacing: '0.02em' }}
             >
               BUILD
             </h1>
 
-            {/* Line 2: YOUR + HOT PINK "ID" STICKER */}
-            <div className="flex items-center gap-2 sm:gap-4 relative w-full flex-wrap my-1 sm:my-2">
-              <h1 
-                className="font-display uppercase"
-                style={{
-                  fontSize: 'clamp(3.5rem, 11vw, 135px)',
-                  lineHeight: '0.85',
-                  color: '#FAF6E9',
-                  WebkitTextStroke: '2px #041E12',
-                  textShadow: '5px 5px 0px rgba(0,0,0,0.9)',
-                  letterSpacing: '0.02em'
-                }}
+            <div className="relative my-1 flex w-full flex-wrap items-center gap-2 sm:my-2 sm:gap-4">
+              <h1
+                className="font-display uppercase leading-[0.85] text-[#FAF6E9] retro-text-shadow text-stroke-dark"
+                style={{ fontSize: 'clamp(3rem, 10vw, 130px)', letterSpacing: '0.02em' }}
               >
                 YOUR
               </h1>
-
-              {/* Hot Pink ID Sticker (Image 1 replica) */}
-              <div 
-                className="px-5 py-2 sm:px-8 sm:py-4 rounded-2xl neo-border font-display font-black uppercase text-white shadow-2xl rotate-[6deg] hover:rotate-0 transition-transform cursor-pointer"
+              <div
+                className="neo-border font-display cursor-pointer rounded-2xl px-5 py-2 font-black uppercase text-white shadow-2xl transition-transform hover:rotate-0 sm:px-8 sm:py-4"
                 style={{
                   backgroundColor: '#ff2a85',
-                  fontSize: 'clamp(2.5rem, 8vw, 100px)',
+                  fontSize: 'clamp(2.2rem, 7vw, 96px)',
                   lineHeight: '0.8',
                   boxShadow: '6px 6px 0px 0px #000',
-                  borderColor: '#000'
+                  transform: 'rotate(6deg)',
                 }}
                 onClick={() => handleStart('choose')}
               >
@@ -212,131 +178,90 @@ const Home = ({ navigateTo }) => {
               </div>
             </div>
 
-            {/* Line 3: HH GOA in Gold */}
-            <h1 
-              className="font-display uppercase text-left w-full"
-              style={{
-                fontSize: 'clamp(3.5rem, 11vw, 135px)',
-                lineHeight: '0.85',
-                color: '#E5A93C',
-                WebkitTextStroke: '2px #041E12',
-                textShadow: '5px 5px 0px rgba(0,0,0,0.9)',
-                letterSpacing: '0.02em'
-              }}
+            <h1
+              className="font-display w-full text-left uppercase leading-[0.85] text-goa-gold retro-text-shadow text-stroke-dark"
+              style={{ fontSize: 'clamp(3rem, 10vw, 130px)', letterSpacing: '0.02em' }}
             >
               HH GOA
             </h1>
           </div>
 
-          {/* Right Column: Event Details & Gold CTA Button (Image 1 replica) */}
-          <div className="lg:col-span-5 flex flex-col justify-between border-l-0 lg:border-l-2 border-white/20 lg:pl-8 py-2">
-            
+          {/* Right: details panel */}
+          <div className="flex flex-col justify-between border-t border-white/20 py-2 lg:col-span-5 lg:border-l-2 lg:border-t-0 lg:pl-8">
             <div className="space-y-4">
-              {/* Location & Dates */}
               <div>
-                <div className="font-mono text-xs sm:text-sm font-extrabold uppercase tracking-widest text-white/80">
+                <div className="font-mono text-xs font-extrabold uppercase tracking-widest text-white/80 sm:text-sm">
                   GOA, INDIA &bull; गोवा
                 </div>
-                <div className="font-display text-3xl sm:text-4xl lg:text-5xl font-black text-white uppercase tracking-wide mt-1">
+                <div className="font-display mt-1 text-3xl font-black uppercase tracking-wide text-white sm:text-4xl lg:text-5xl">
                   28 &mdash; 31 OCT 2026
                 </div>
-                <div className="font-mono text-xs font-bold uppercase tracking-wider text-[#ffe600] mt-1">
+                <div className="font-mono mt-1 text-xs font-bold uppercase tracking-wider text-goa-yellow">
                   4 DAYS OF INTENSIVE BUILDING & CULTURE
                 </div>
               </div>
 
-              {/* Description Box */}
-              <p className="font-mono text-xs sm:text-sm text-white/90 leading-relaxed pt-3 border-t border-white/15">
-                Create your official Hacker House Goa 2026 Builder Passport. Share your identity pass across X with <span className="text-[#ffe600] font-bold">#FrameInGoa</span> to join the community build movement.
+              <p className="font-mono border-t border-white/15 pt-3 text-xs leading-relaxed text-white/90 sm:text-sm">
+                Create your official Hacker House Goa 2026 Builder Passport. Share your identity pass across X with{' '}
+                <span className="font-bold text-goa-yellow">#FrameInGoa</span> to join the community build movement.
               </p>
             </div>
 
-            {/* Live Countdown Ticker Box */}
-            <div className="my-6 p-4 rounded-xl bg-black/60 border border-white/20 backdrop-blur-md">
-              <div className="font-mono text-[11px] font-bold uppercase text-[#ff2a85] mb-2 flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-[#ff2a85] animate-ping inline-block" />
-                <span>EVENT COUNTDOWN TICKER</span>
+            <div className="my-6 rounded-xl border border-white/20 bg-black/60 p-4 backdrop-blur-md">
+              <div className="mb-2 flex items-center gap-2 font-mono text-[11px] font-bold uppercase text-goa-pink">
+                <span className="inline-block h-2 w-2 animate-ping rounded-full bg-goa-pink" />
+                <span>EVENT COUNTDOWN</span>
               </div>
-              <div className="grid grid-cols-4 gap-2 text-center font-mono font-black">
-                <div className="bg-white/10 p-2 rounded border border-white/10">
-                  <div className="text-xl sm:text-2xl text-[#ffe600]">{timeLeft.days}</div>
-                  <div className="text-[9px] text-white/70 uppercase">DAYS</div>
-                </div>
-                <div className="bg-white/10 p-2 rounded border border-white/10">
-                  <div className="text-xl sm:text-2xl text-[#ffe600]">{timeLeft.hours}</div>
-                  <div className="text-[9px] text-white/70 uppercase">HOURS</div>
-                </div>
-                <div className="bg-white/10 p-2 rounded border border-white/10">
-                  <div className="text-xl sm:text-2xl text-[#ffe600]">{timeLeft.days > 0 ? timeLeft.mins : '0'}</div>
-                  <div className="text-[9px] text-white/70 uppercase">MINS</div>
-                </div>
-                <div className="bg-white/10 p-2 rounded border border-white/10">
-                  <div className="text-xl sm:text-2xl text-[#ff2a85]">{timeLeft.secs}</div>
-                  <div className="text-[9px] text-white/70 uppercase">SECS</div>
-                </div>
+              <div className="grid grid-cols-4 gap-2">
+                <CountdownUnit value={timeLeft.days} label="Days" />
+                <CountdownUnit value={timeLeft.hours} label="Hours" />
+                <CountdownUnit value={timeLeft.mins} label="Mins" />
+                <CountdownUnit value={timeLeft.secs} label="Secs" accent />
               </div>
             </div>
 
-            {/* Main Gold Pill CTA Button matching Image 1 */}
-            <div className="pt-2">
-              <button
-                onClick={() => handleStart('choose')}
-                className="w-full font-mono font-black text-sm sm:text-base py-4 px-8 rounded-full uppercase tracking-wider flex items-center justify-center gap-3 transition-all hover:scale-105 active:scale-95 shadow-2xl cursor-pointer"
-                style={{
-                  backgroundColor: '#E5A93C',
-                  color: '#000000',
-                  border: '3px solid #000000',
-                  boxShadow: '0 0 25px rgba(229, 169, 60, 0.6), 6px 6px 0px 0px #000'
-                }}
-              >
-                <span className="text-xl">⚡</span>
-                <span>CLAIM YOUR PASSPORT</span>
-                <span className="text-lg">&rarr;</span>
-              </button>
-            </div>
-
-          </div>
-
-        </div>
-
-        {/* Feature Highlights Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-12 pt-8 border-t border-white/15">
-          <div className="bg-black/30 p-4 rounded-xl border border-white/10 flex items-start gap-3">
-            <span className="text-2xl">🎫</span>
-            <div>
-              <div className="font-mono text-xs font-bold text-[#ffe600] uppercase">4K High-Res PNG & ZIP</div>
-              <div className="font-mono text-[11px] text-white/70">Press 2400×1500px collectible passes ready for printing or socials.</div>
-            </div>
-          </div>
-
-          <div className="bg-black/30 p-4 rounded-xl border border-white/10 flex items-start gap-3">
-            <span className="text-2xl">👥</span>
-            <div>
-              <div className="font-mono text-xs font-bold text-[#ff2a85] uppercase">Solo & Squad Generator</div>
-              <div className="font-mono text-[11px] text-white/70">Build solo or press full team passes in one seamless batch.</div>
-            </div>
-          </div>
-
-          <div className="bg-black/30 p-4 rounded-xl border border-white/10 flex items-start gap-3">
-            <span className="text-2xl">🎨</span>
-            <div>
-              <div className="font-mono text-xs font-bold text-[#00e5ff] uppercase">Theme & Sticker Studio</div>
-              <div className="font-mono text-[11px] text-white/70">Customize with Goa Lotus, Anjuna Sunset, stickers & Bitmojis.</div>
-            </div>
+            <button
+              onClick={() => handleStart('choose')}
+              className="flex w-full cursor-pointer items-center justify-center gap-3 rounded-full border-[3px] border-black px-8 py-4 font-mono text-sm font-black uppercase tracking-wider shadow-2xl transition-all hover:scale-[1.02] active:scale-[0.98] sm:text-base"
+              style={{
+                backgroundColor: '#E5A93C',
+                color: '#000',
+                boxShadow: '0 0 25px rgba(229, 169, 60, 0.6), 6px 6px 0px 0px #000',
+              }}
+            >
+              <span className="text-xl">⚡</span>
+              <span>CLAIM YOUR PASSPORT</span>
+              <span className="text-lg">&rarr;</span>
+            </button>
           </div>
         </div>
 
+        {/* Feature cards */}
+        <div className="mt-10 grid grid-cols-1 gap-4 border-t border-white/15 pt-8 sm:grid-cols-3 sm:mt-12">
+          {[
+            { icon: '🎫', color: 'text-goa-yellow', title: '4K High-Res PNG & ZIP', desc: 'Press 2400×1500px collectible passes ready for printing or socials.' },
+            { icon: '👥', color: 'text-goa-pink', title: 'Solo & Squad Generator', desc: 'Build solo or press full team passes in one seamless batch.' },
+            { icon: '🎨', color: 'text-goa-cyan', title: 'Theme & Sticker Studio', desc: 'Customize with Goa Lotus, Anjuna Sunset, stickers & Bitmojis.' },
+          ].map(({ icon, color, title, desc }) => (
+            <div key={title} className="flex items-start gap-3 rounded-xl border border-white/10 bg-black/30 p-4">
+              <span className="text-2xl">{icon}</span>
+              <div>
+                <div className={`font-mono text-xs font-bold uppercase ${color}`}>{title}</div>
+                <div className="font-mono text-[11px] text-white/70">{desc}</div>
+              </div>
+            </div>
+          ))}
+        </div>
       </main>
 
-      {/* 3. TROPICAL FOOTER BAR */}
-      <footer className="w-full z-30 shrink-0 border-t-2 border-black py-4 bg-[#041d11]">
-        <div className="w-full max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center text-center font-mono text-xs text-white/90 font-bold uppercase tracking-widest gap-2">
+      {/* Footer */}
+      <footer className="home-footer">
+        <div className="mx-auto flex w-full max-w-7xl flex-col items-center justify-between gap-2 px-4 text-center font-mono text-xs font-bold uppercase tracking-widest text-white/90 sm:flex-row">
           <div>🌴 GOA, INDIA &bull; 28 - 31 OCT 2026</div>
-          <div style={{ color: '#ffe600' }}>#FRAMEINGOA &bull; HACKER HOUSE GOA 2026</div>
-          <div className="text-white/60 text-[10px]">🔥 1,420+ PASSPORTS ISSUED</div>
+          <div className="text-goa-yellow">#FRAMEINGOA &bull; HACKER HOUSE GOA 2026</div>
+          <div className="text-[10px] text-white/60">🔥 1,420+ PASSPORTS ISSUED</div>
         </div>
       </footer>
-
     </div>
   );
 };

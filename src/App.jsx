@@ -121,7 +121,7 @@ function App() {
         />
       )}
       
-      <main key={currentView} className="flex-1 w-full fade-in flex flex-col items-center">
+      <main key={currentView} className="page-main fade-in">
         {currentView === 'choose' && (
           <ChooseMode navigateTo={navigateTo} />
         )}

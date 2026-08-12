@@ -34,7 +34,7 @@ const SoloDetails = ({ member, updateSoloMember, navigateTo }) => {
   };
 
   return (
-    <div className="flex flex-col gap-6 w-full max-w-2xl mx-auto py-4 fade-in select-none">
+    <div className="flex w-full max-w-2xl flex-col gap-6 py-4 fade-in select-none mx-auto">
       <div 
         className="neo-border flex flex-col gap-6"
         style={{

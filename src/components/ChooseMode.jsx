@@ -30,33 +30,33 @@ const ChooseMode = ({ navigateTo }) => {
   };
 
   return (
-    <div className="flex flex-col flex-1 w-full max-w-6xl mx-auto px-4 py-4 fade-in relative select-none">
+    <div className="flex w-full max-w-6xl flex-1 flex-col px-4 py-4 fade-in relative select-none mx-auto">
       
-      {/* 1. HEADER BANNER MATCHING IMAGE 3 ("TEAM UP OR GO SOLO?") */}
-      <div 
-        className="w-full neo-border neo-shadow py-3 px-6 rounded-xl flex items-center justify-between my-4 border-2 border-black"
+      {/* 1. HEADER BANNER */}
+      <div
+        className="neo-border neo-shadow my-4 w-full rounded-xl border-2 border-black px-4 py-3 sm:px-6"
         style={{ backgroundColor: '#042214' }}
       >
-        <div className="flex items-center gap-3">
-          <LotusIconSmall />
-          <LotusIconSmall />
-        </div>
+        <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-between">
+          <div className="hidden items-center gap-2 sm:flex">
+            <LotusIconSmall />
+            <LotusIconSmall />
+          </div>
 
-        {/* Image 3 Exact Title Banner */}
-        <h1 
-          className="font-display uppercase tracking-wider text-center text-white"
-          style={{ 
-            fontSize: 'clamp(1.8rem, 5vw, 3.8rem)',
-            textShadow: '3px 3px 0px #000',
-            lineHeight: '1'
-          }}
-        >
-          <span style={{ color: '#ffe600' }}>TEAM UP</span> OR <span style={{ color: '#ffffff' }}>GO SOLO?</span>
-        </h1>
+          <h1
+            className="font-display text-center uppercase tracking-wider text-white retro-text-shadow-sm"
+            style={{
+              fontSize: 'clamp(1.5rem, 4.5vw, 3.5rem)',
+              lineHeight: '1.05',
+            }}
+          >
+            <span className="text-goa-yellow">TEAM UP</span> OR <span className="text-white">GO SOLO?</span>
+          </h1>
 
-        <div className="flex items-center gap-3">
-          <LotusIconSmall />
-          <LotusIconSmall />
+          <div className="hidden items-center gap-2 sm:flex">
+            <LotusIconSmall />
+            <LotusIconSmall />
+          </div>
         </div>
       </div>
 
@@ -64,8 +64,8 @@ const ChooseMode = ({ navigateTo }) => {
         Select your passport track below. Build your individual builder pass or press a full squad pass set together in one go!
       </p>
 
-      {/* 2. CARDS SECTION (3D Tilt Responsive Cards matching Image 3) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full my-4 items-stretch">
+      {/* 2. CARDS SECTION */}
+      <div className="my-4 grid w-full grid-cols-1 items-stretch gap-6 md:grid-cols-2 md:gap-8">
         
         {/* Solo Card (Image 3 Replica) */}
         <div 
@@ -142,7 +142,7 @@ const ChooseMode = ({ navigateTo }) => {
           </div>
           
           {/* Card Info */}
-          <h2 className="font-display uppercase mb-1" style={{ fontSize: '3rem', color: '#074828', lineHeight: '0.95' }}>
+          <h2 className="font-display mb-1 uppercase leading-none" style={{ fontSize: 'clamp(2rem, 5vw, 3rem)', color: '#074828' }}>
             BUILD SOLO
           </h2>
           <div className="font-mono text-xs font-black uppercase mb-4" style={{ color: '#ff2a85' }}>
@@ -258,7 +258,7 @@ const ChooseMode = ({ navigateTo }) => {
           </div>
           
           {/* Card Info */}
-          <h2 className="font-display uppercase mb-1" style={{ fontSize: '3rem', color: '#ffe600', lineHeight: '0.95' }}>
+          <h2 className="font-display mb-1 uppercase leading-none text-goa-yellow" style={{ fontSize: 'clamp(2rem, 5vw, 3rem)' }}>
             TEAM UP
           </h2>
           <div className="font-mono text-xs font-black uppercase mb-4" style={{ color: '#ff2a85' }}>
