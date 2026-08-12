@@ -20,6 +20,7 @@ export default {
       },
       fontFamily: {
         display: ['"Bebas Neue"', '"Anton"', 'sans-serif'],
+        serif: ['"Playfair Display"', 'Georgia', 'serif'],
         mono: ['"Space Mono"', 'monospace'],
         sans: ['"Plus Jakarta Sans"', 'sans-serif'],
       },

@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import Header from './components/Header';
 import StepTracker from './components/StepTracker';
 import SquadBuilder from './components/SquadBuilder';
-import TeamPreview from './components/TeamPreview';
 import Footer from './components/Footer';
 import Home from './components/Home';
 import ChooseMode from './components/ChooseMode';
@@ -43,8 +42,8 @@ function App() {
 
   // Frame Customization State
   const [frameConfig, setFrameConfig] = useState({
-    themeId: 'goa-estate',
-    stickers: ['goa2026']
+    frameId: 'arch-badge',
+    themeId: 'arch-badge',
   });
 
   const navigateTo = (view) => {
@@ -109,8 +108,11 @@ function App() {
     return <Home navigateTo={navigateTo} />;
   }
 
+  const isPosterFlow = ['choose', 'solo-details', 'squad-details', 'frame'].includes(currentView);
+  const isPosterBgLow = ['choose', 'solo-details'].includes(currentView);
+
   return (
-    <div className="app-container">
+    <div className={`${isPosterFlow ? 'flow-app' : 'app-container'}${isPosterBgLow ? ' flow-app-bg-low' : ''}`}>
       <Header navigateTo={navigateTo} currentView={currentView} generationMode={generationMode} />
       
       {currentView !== 'choose' && (
@@ -121,29 +123,22 @@ function App() {
         />
       )}
       
-      <main key={currentView} className="page-main fade-in">
+      <main key={currentView} className={isPosterFlow ? 'flow-main fade-in' : 'page-main fade-in'}>
         {currentView === 'choose' && (
           <ChooseMode navigateTo={navigateTo} />
         )}
         
         {currentView === 'squad-details' && (
-          <div className="squad-layout">
-            <div className="squad-form-col">
-              <SquadBuilder 
-                teamName={teamName}
-                setTeamName={setTeamName}
-                members={squadMembers}
-                updateMember={updateSquadMember}
-                addMember={addSquadMember}
-                removeMember={removeSquadMember}
-                moveMember={moveSquadMember}
-                navigateTo={navigateTo}
-              />
-            </div>
-            <div className="squad-preview-col">
-              <TeamPreview members={squadMembers} teamName={teamName} />
-            </div>
-          </div>
+          <SquadBuilder 
+            teamName={teamName}
+            setTeamName={setTeamName}
+            members={squadMembers}
+            updateMember={updateSquadMember}
+            addMember={addSquadMember}
+            removeMember={removeSquadMember}
+            moveMember={moveSquadMember}
+            navigateTo={navigateTo}
+          />
         )}
         
         {currentView === 'solo-details' && (
@@ -175,7 +170,7 @@ function App() {
         )}
       </main>
       
-      <Footer />
+      {currentView !== 'choose' && !isPosterFlow && <Footer />}
     </div>
   );
 }

@@ -1,198 +1,38 @@
 import React, { useEffect, useRef, useState } from 'react';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
-import { THEMES, STICKERS } from './FrameSelector';
+import { getFrame } from '../data/frameThemes';
+import { drawBadge } from '../utils/badgeDraw';
 import BitmojiAvatarCard from './BitmojiAvatarCard';
-import { drawCanvasQRCode } from '../utils/qrCode';
 import { soundFX } from '../utils/sound';
 
 const SingleBadgeCard = ({ member, teamName, frameConfig, onRendered }) => {
   const canvasRef = useRef(null);
   const [downloadUrl, setDownloadUrl] = useState('');
   const [copied, setCopied] = useState(false);
-  const currentTheme = THEMES.find(t => t.id === frameConfig.themeId) || THEMES[0];
+  const currentFrame = getFrame(frameConfig.frameId || frameConfig.themeId);
 
   useEffect(() => {
     let isMounted = true;
-    const drawBadge = async () => {
-      await document.fonts.ready;
+    const render = async () => {
       const canvas = canvasRef.current;
       if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-
-      // High-resolution canvas dimensions (2400 x 1500 px)
-      canvas.width = 2400;
-      canvas.height = 1500;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      const s = 3; // Scale factor: 800*3 = 2400, 500*3 = 1500
-
-      // 1. Outer Background
-      ctx.fillStyle = currentTheme.bg;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      // 2. Inner Card Box
-      const m = 20 * s;
-      ctx.fillStyle = currentTheme.cardBg;
-      ctx.fillRect(m, m, canvas.width - (m * 2), canvas.height - (m * 2));
-
-      // Border
-      ctx.strokeStyle = currentTheme.borderColor;
-      ctx.lineWidth = 6 * s;
-      ctx.strokeRect(m, m, canvas.width - (m * 2), canvas.height - (m * 2));
-
-      // 3. Top Banner
-      const headerH = 75 * s;
-      ctx.fillStyle = currentTheme.headerBg;
-      ctx.fillRect(m, m, canvas.width - (m * 2), headerH);
-      ctx.beginPath();
-      ctx.moveTo(m, m + headerH);
-      ctx.lineTo(canvas.width - m, m + headerH);
-      ctx.stroke();
-
-      // Logo Icon Box
-      const iconDim = 54 * s;
-      ctx.fillStyle = currentTheme.accent;
-      ctx.fillRect(m + (16 * s), m + (12 * s), iconDim, iconDim);
-      ctx.strokeRect(m + (16 * s), m + (12 * s), iconDim, iconDim);
-
-      ctx.fillStyle = '#ffffff';
-      ctx.font = '900 72px "Space Mono", monospace';
-      ctx.fillText('HH', m + (26 * s), m + (48 * s));
-
-      // Event Title
-      ctx.fillStyle = currentTheme.headerText;
-      ctx.font = '900 96px "Anton", "Bebas Neue", sans-serif';
-      ctx.fillText('HACKER HOUSE GOA 2026', m + (85 * s), m + (50 * s));
-
-      // 4. Member Name
-      ctx.fillStyle = currentTheme.textColor;
-      ctx.font = '900 115px "Space Mono", monospace';
-      const nameText = (member.name || 'ANONYMOUS BUILDER').toUpperCase();
-      ctx.fillText(nameText.length > 17 ? nameText.substring(0, 17) + '...' : nameText, m + (30 * s), m + (145 * s));
-
-      // 5. Role Badge
-      ctx.fillStyle = currentTheme.headerBg;
-      const roleStr = (member.role || 'BUILDER').toUpperCase();
-      ctx.font = '700 60px "Space Mono", monospace';
-      const roleWidth = ctx.measureText(roleStr).width + (28 * s);
-      const badgeH = 38 * s;
-      ctx.fillRect(m + (30 * s), m + (175 * s), roleWidth, badgeH);
-      ctx.strokeRect(m + (30 * s), m + (175 * s), roleWidth, badgeH);
-
-      ctx.fillStyle = currentTheme.headerText;
-      ctx.fillText(roleStr, m + (44 * s), m + (201 * s));
-
-      // Title Badge (if exists)
-      if (member.title) {
-        ctx.fillStyle = currentTheme.accent;
-        const titleStr = member.title.toUpperCase();
-        const titleWidth = ctx.measureText(titleStr).width + (28 * s);
-        ctx.fillRect(m + (30 * s) + roleWidth + (12 * s), m + (175 * s), titleWidth, badgeH);
-        ctx.strokeRect(m + (30 * s) + roleWidth + (12 * s), m + (175 * s), titleWidth, badgeH);
-
-        ctx.fillStyle = '#ffffff';
-        ctx.fillText(titleStr, m + (44 * s) + roleWidth + (12 * s), m + (201 * s));
-      }
-
-      // 6. ID & Squad info
-      ctx.fillStyle = currentTheme.textColor;
-      ctx.font = '700 60px "Space Mono", monospace';
-      ctx.fillText(`ID: ${member.assignedId || 'HH-26-1065'}`, m + (30 * s), m + (270 * s));
-
-      const displaySquad = teamName || member.teamName;
-      if (displaySquad) {
-        ctx.fillText(`SQUAD: ${displaySquad.toUpperCase()}`, m + (30 * s), m + (305 * s));
-      }
-
-      // 7. Photo Box (Right side)
-      const px = canvas.width - (280 * s);
-      const py = m + (95 * s);
-      const pw = 220 * s;
-      const ph = 260 * s;
-
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(px, py, pw, ph);
-      ctx.strokeRect(px, py, pw, ph);
-
-      // 8. Draw Canvas QR Code in bottom left
-      const qrData = `HHGOA2026:${member.assignedId}:${member.name}:${member.role}`;
-      drawCanvasQRCode(ctx, qrData, m + (30 * s), m + (335 * s), 105 * s, currentTheme.borderColor, currentTheme.cardBg);
-
-      const finishDrawing = () => {
-        // Draw Stickers Overlay
-        if (frameConfig.stickers && frameConfig.stickers.length > 0) {
-          let stickerX = m + (150 * s);
-          const stickerY = m + (360 * s);
-
-          frameConfig.stickers.forEach((stId) => {
-            const st = STICKERS.find((s) => s.id === stId);
-            if (st) {
-              ctx.fillStyle = currentTheme.accent;
-              ctx.font = '700 42px "Space Mono", monospace';
-              const stW = ctx.measureText(st.label).width + (16 * s);
-
-              if (stickerX + stW < px - (10 * s)) {
-                ctx.fillRect(stickerX, stickerY, stW, 28 * s);
-                ctx.strokeRect(stickerX, stickerY, stW, 28 * s);
-
-                ctx.fillStyle = '#ffffff';
-                ctx.fillText(st.label, stickerX + (8 * s), stickerY + (19 * s));
-                stickerX += stW + (8 * s);
-              }
-            }
-          });
-        }
-
-        // Watermark / Hash Code
-        ctx.fillStyle = currentTheme.textColor;
-        ctx.font = '700 36px "Space Mono", monospace';
-        ctx.fillText('VERIFIED PASSPORT • #FRAMEINGOA', canvas.width - (280 * s), m + (440 * s));
-
-        if (isMounted) {
-          const dataUrl = canvas.toDataURL('image/png');
-          setDownloadUrl(dataUrl);
-          if (onRendered) onRendered(member.id, dataUrl);
-        }
-      };
-
-      if (member.photo) {
-        const img = new Image();
-        img.src = member.photo;
-        img.onload = () => {
-          ctx.save();
-          ctx.beginPath();
-          ctx.rect(px + (6 * s), py + (6 * s), pw - (12 * s), ph - (12 * s));
-          ctx.clip();
-
-          const zoom = member.zoom || 1.0;
-          const sw = img.width / zoom;
-          const sh = img.height / zoom;
-          const sx = (img.width - sw) / 2;
-          const sy = (img.height - sh) / 2;
-
-          ctx.drawImage(img, sx, sy, sw, sh, px + (6 * s), py + (6 * s), pw - (12 * s), ph - (12 * s));
-          ctx.restore();
-          finishDrawing();
-        };
-        img.onerror = () => {
-          finishDrawing();
-        };
-      } else {
-        ctx.fillStyle = '#e5e7eb';
-        ctx.fillRect(px + (6 * s), py + (6 * s), pw - (12 * s), ph - (12 * s));
-        ctx.fillStyle = '#6b7280';
-        ctx.font = '700 144px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('👤', px + pw / 2, py + ph / 2 + 40);
-        ctx.textAlign = 'left';
-        finishDrawing();
+      await drawBadge(canvas, {
+        member,
+        teamName,
+        frame: currentFrame,
+        width: currentFrame.exportW,
+        height: currentFrame.exportH,
+      });
+      if (isMounted) {
+        const dataUrl = canvas.toDataURL('image/png');
+        setDownloadUrl(dataUrl);
+        if (onRendered) onRendered(member.id, dataUrl);
       }
     };
-
-    drawBadge();
+    render();
     return () => { isMounted = false; };
-  }, [member, teamName, frameConfig]);
+  }, [member, teamName, frameConfig, currentFrame, onRendered]);
 
   const fileName = `${member.name ? member.name.replace(/\s+/g, '_') : 'ID'}_Goa2026.png`;
 
@@ -223,7 +63,7 @@ const SingleBadgeCard = ({ member, teamName, frameConfig, onRendered }) => {
         <canvas 
           ref={canvasRef} 
           className="w-full neo-shadow rounded-lg border-2 border-black max-w-[760px]"
-          style={{ aspectRatio: '8/5' }}
+          style={{ aspectRatio: `${currentFrame.exportW} / ${currentFrame.exportH}` }}
         />
       </div>
 

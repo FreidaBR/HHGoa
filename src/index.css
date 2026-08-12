@@ -344,24 +344,854 @@
     @apply inline-flex items-center gap-2 rounded-full border-2 px-4 py-1.5 font-mono text-xs font-black uppercase tracking-widest;
   }
 
-  /* ── Home page shell ── */
-  .home-shell {
-    @apply relative flex min-h-screen w-full flex-col overflow-hidden;
-    background-color: #07301c;
+  /* ── Hero / Home page ── */
+  .hero-shell {
+    @apply relative flex w-full flex-col overflow-x-hidden;
+    min-height: 132vh;
+    background-color: #1b5e3a;
+    background-image: url('/assets/sun-rise.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center calc(100% + 20vh);
   }
 
-  .home-header {
-    @apply relative z-30 flex w-full shrink-0 items-center justify-between gap-3 border-b-2 border-black px-4 py-3 sm:px-6;
-    background-color: #041d11;
+  .hero-shell::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(7, 38, 24, 0.15) 0%,
+      rgba(7, 38, 24, 0.05) 42%,
+      transparent 68%
+    );
   }
 
-  .home-main {
-    @apply relative z-20 mx-auto flex w-full max-w-7xl flex-1 flex-col justify-center px-4 py-8 sm:px-6 sm:py-10 lg:px-8;
+  .hero-meta {
+    @apply relative z-10 flex items-center justify-center gap-3 border-b border-white/10 px-4 py-2.5 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-white/70;
+    background: rgba(4, 25, 16, 0.45);
+    backdrop-filter: blur(6px);
   }
 
-  .home-footer {
-    @apply relative z-30 w-full shrink-0 border-t-2 border-black py-4;
-    background-color: #041d11;
+  .hero-meta-dot {
+    @apply h-1 w-1 rounded-full bg-goa-yellow/70;
+  }
+
+  .hero-nav {
+    @apply relative z-10 mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 py-6 sm:px-6 lg:px-8;
+  }
+
+  .hero-nav-brand {
+    @apply flex min-w-0 items-center gap-4;
+  }
+
+  .hero-studio-logo {
+    @apply h-11 w-auto shrink-0 sm:h-14;
+    mix-blend-mode: screen;
+  }
+
+  .hero-nav-copy {
+    @apply flex min-w-0 flex-col justify-center;
+  }
+
+  .hero-nav-studio {
+    @apply font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-goa-yellow;
+  }
+
+  .hero-nav-product {
+    @apply truncate font-sans text-xs text-white/50 sm:text-sm;
+  }
+
+  .hero-nav-actions {
+    @apply flex shrink-0 items-center gap-2 sm:gap-3;
+  }
+
+  .hero-icon-btn {
+    @apply flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-white/15 text-white/60 transition-colors hover:border-white/30 hover:text-white;
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .hero-nav-cta {
+    @apply flex cursor-pointer items-center gap-2 rounded-full border border-goa-yellow/40 px-3 py-1.5 font-mono text-[9px] font-bold uppercase tracking-widest text-goa-yellow transition-all hover:border-goa-yellow hover:bg-goa-yellow/10 sm:px-4 sm:py-2 sm:text-[10px];
+  }
+
+  .hero-main {
+    @apply relative z-10 mx-auto flex w-full max-w-6xl flex-1 flex-col justify-start px-4 pb-20 pt-0 sm:px-6 sm:pb-28 lg:px-8;
+  }
+
+  .hero-grid {
+    @apply -mt-1 grid grid-cols-1 items-start gap-12 sm:-mt-3 lg:-mt-5 lg:grid-cols-[1.15fr_0.85fr] lg:gap-16;
+  }
+
+  .hero-copy {
+    @apply flex flex-col;
+  }
+
+  .hero-eyebrow {
+    @apply mb-8 flex items-center gap-2.5 font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-white/45;
+  }
+
+  .hero-headline {
+    @apply m-0 font-display uppercase leading-[0.88] text-[#F5F0E6];
+    font-size: clamp(3.5rem, 11vw, 7.5rem);
+    letter-spacing: 0.01em;
+  }
+
+  .hero-line {
+    @apply block;
+  }
+
+  .hero-line-accent {
+    @apply text-goa-yellow;
+  }
+
+  .hero-times {
+    @apply mx-1 inline-block font-sans font-light text-white/35;
+    font-size: 0.55em;
+    vertical-align: middle;
+  }
+
+  .hero-tagline {
+    @apply mt-5 font-mono text-xs font-bold uppercase tracking-[0.35em] text-goa-pink sm:text-sm;
+  }
+
+  .hero-lede {
+    @apply mt-6 max-w-lg font-sans text-sm leading-relaxed text-white/65 sm:text-[15px];
+  }
+
+  .hero-hashtag {
+    @apply font-mono font-semibold text-goa-yellow;
+  }
+
+  .hero-actions {
+    @apply mt-9 flex flex-col gap-5 sm:flex-row sm:items-center sm:gap-8;
+  }
+
+  .hero-primary-btn {
+    @apply inline-flex cursor-pointer items-center justify-center gap-2.5 rounded-full border-2 border-black bg-goa-yellow px-7 py-3.5 font-mono text-xs font-black uppercase tracking-widest text-black transition-all hover:-translate-y-0.5 hover:bg-[#ffff33] active:translate-y-0;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.15) inset, 4px 4px 0 #041912;
+  }
+
+  .hero-countdown {
+    @apply flex flex-col gap-0.5;
+  }
+
+  .hero-countdown-label {
+    @apply font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-white/35;
+  }
+
+  .hero-countdown-value {
+    @apply font-mono text-sm font-bold tabular-nums text-white/80;
+  }
+
+  .hero-card {
+    @apply rounded-2xl border border-white/15 p-6 sm:p-7;
+    background: rgba(4, 25, 16, 0.55);
+    backdrop-filter: blur(10px);
+  }
+
+  .hero-card-top {
+    @apply flex items-center gap-3;
+  }
+
+  .hero-card-kicker {
+    @apply font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-white/45;
+  }
+
+  .hero-card-title {
+    @apply mt-0.5 font-display text-2xl uppercase tracking-wide text-white sm:text-3xl;
+  }
+
+  .hero-goa-script {
+    @apply ml-2 inline-block font-sans text-goa-pink;
+    font-size: 0.85em;
+    transform: rotate(-3deg);
+    text-shadow: 0 0 0 transparent;
+    -webkit-text-stroke: 0;
+  }
+
+  .hero-card-divider {
+    @apply my-5 h-px w-full;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+  }
+
+  .hero-card-stats {
+    @apply grid grid-cols-3 gap-3;
+  }
+
+  .hero-card-stats dt {
+    @apply font-mono text-[9px] font-bold uppercase tracking-widest text-white/35;
+  }
+
+  .hero-card-stats dd {
+    @apply mt-1 font-sans text-sm font-semibold text-white;
+  }
+
+  .hero-card-note {
+    @apply mt-5 font-sans text-sm leading-relaxed text-white/50;
+  }
+
+  .hero-card-link {
+    @apply mt-5 inline-flex cursor-pointer items-center gap-2 border-0 bg-transparent p-0 font-mono text-[10px] font-bold uppercase tracking-widest text-goa-yellow transition-colors hover:text-[#ffff66];
+  }
+
+  .hero-features {
+    @apply relative z-10 mt-20 grid grid-cols-1 gap-px overflow-hidden rounded-xl border border-white/15 sm:mt-24 sm:grid-cols-3;
+    background: rgba(255, 255, 255, 0.12);
+  }
+
+  .hero-feature {
+    @apply flex gap-4 p-5 sm:p-6;
+    background: rgba(4, 25, 16, 0.62);
+    backdrop-filter: blur(8px);
+  }
+
+  .hero-feature-icon {
+    @apply flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-white/10;
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .hero-feature-label {
+    @apply font-mono text-[11px] font-bold uppercase tracking-wider text-goa-yellow;
+  }
+
+  .hero-feature-desc {
+    @apply mt-1 font-sans text-xs leading-relaxed text-white/50;
+  }
+
+  .hero-footer {
+    @apply relative z-10 mt-auto flex flex-wrap items-center justify-center gap-3 border-t border-white/10 px-4 py-5 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-white/55;
+    background: rgba(4, 25, 16, 0.5);
+    backdrop-filter: blur(6px);
+  }
+
+  .hero-footer-dot {
+    @apply hidden h-1 w-1 rounded-full bg-white/20 sm:block;
+  }
+
+  /* ── Site header (inner pages) ── */
+  .site-header {
+    @apply relative z-20 mb-4 flex w-full items-center justify-between gap-4 border-b border-white/10 py-4;
+  }
+
+  .site-header-poster {
+    @apply relative z-20 mx-auto mb-0 w-full max-w-6xl border-white/10 px-4 sm:px-6 lg:px-8;
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+  }
+
+  .site-back-btn {
+    @apply flex shrink-0 items-center gap-2;
+  }
+
+  .site-back-btn-poster {
+    @apply cursor-pointer rounded-full border border-white/20 bg-black/30 px-4 py-2 font-mono text-[10px] font-bold uppercase tracking-widest text-white/70 backdrop-blur-sm transition-colors hover:border-white/35 hover:text-white;
+  }
+
+  /* ── Flow pages (choose + details) ── */
+  .flow-app,
+  .choose-app {
+    @apply relative flex min-h-screen w-full flex-col overflow-x-hidden;
+    background-color: #1b5e3a;
+    background-image: url('/assets/sun-rise.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center calc(100% + 20vh);
+  }
+
+  /* Choose + solo details — poster sits lower on screen */
+  .flow-app-bg-low {
+    min-height: 120vh;
+    background-position: center calc(100% + 38vh);
+  }
+
+  .flow-app::before,
+  .choose-app::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(7, 38, 24, 0.2) 0%,
+      rgba(7, 38, 24, 0.06) 45%,
+      transparent 72%
+    );
+  }
+
+  .flow-main,
+  .choose-main {
+    @apply relative z-10 flex w-full flex-1 flex-col;
+  }
+
+  /* ── Details section (solo + squad) ── */
+  .details-shell {
+    @apply relative flex w-full flex-1 flex-col;
+  }
+
+  .details-meta {
+    @apply relative z-10 flex flex-wrap items-center justify-center gap-3 border-b border-white/10 px-4 py-2.5 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-white/65;
+    background: rgba(4, 25, 16, 0.48);
+    backdrop-filter: blur(6px);
+  }
+
+  .details-meta-dot {
+    @apply h-1 w-1 rounded-full bg-goa-yellow/70;
+  }
+
+  .details-inner {
+    @apply relative z-10 mx-auto w-full max-w-3xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8;
+  }
+
+  .details-inner-solo {
+    @apply max-w-2xl;
+  }
+
+  .details-squad-layout {
+    @apply relative z-10 mx-auto grid w-full max-w-6xl grid-cols-1 items-start gap-6 px-4 py-8 sm:px-6 lg:grid-cols-[1fr_280px] lg:gap-8 lg:px-8 lg:py-10;
+  }
+
+  .details-squad-layout .details-inner {
+    @apply mx-0 max-w-none px-0 py-0;
+  }
+
+  .details-head {
+    @apply mb-8 text-center sm:mb-10;
+  }
+
+  .details-head-compact {
+    @apply mb-6 text-left sm:mb-8;
+  }
+
+  .details-eyebrow {
+    @apply mb-3 flex items-center justify-center gap-2.5 font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-white/45;
+  }
+
+  .details-head-compact .details-eyebrow {
+    @apply justify-start;
+  }
+
+  .details-title {
+    @apply m-0 font-display uppercase leading-[0.95] text-[#F5F0E6];
+    font-size: clamp(2.25rem, 6vw, 3.5rem);
+  }
+
+  .details-lede {
+    @apply mx-auto mt-4 max-w-lg font-sans text-sm leading-relaxed text-white/55;
+  }
+
+  .details-card {
+    @apply rounded-2xl border border-white/15 p-6 sm:p-7;
+    background: rgba(4, 25, 16, 0.62);
+    backdrop-filter: blur(12px);
+  }
+
+  .details-card-squad-head {
+    @apply mb-6;
+  }
+
+  .details-card-kicker {
+    @apply font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-goa-yellow;
+  }
+
+  .details-card-title {
+    @apply mt-2 font-display text-2xl uppercase leading-none text-white;
+  }
+
+  .details-card-desc {
+    @apply mt-2 font-sans text-sm leading-relaxed text-white/50;
+  }
+
+  .details-fields {
+    @apply mt-8 flex flex-col gap-5;
+  }
+
+  .details-field-row {
+    @apply grid grid-cols-1 gap-5 sm:grid-cols-2;
+  }
+
+  .details-field {
+    @apply flex flex-col gap-2;
+  }
+
+  .details-label {
+    @apply font-mono text-[10px] font-bold uppercase tracking-widest text-white/55;
+  }
+
+  .details-required {
+    @apply text-goa-pink;
+  }
+
+  .details-optional {
+    @apply font-normal normal-case tracking-normal text-white/30;
+  }
+
+  .details-input {
+    @apply w-full rounded-xl border border-white/15 px-4 py-3 font-mono text-sm text-white outline-none transition-colors;
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .details-input::placeholder {
+    color: rgba(255, 255, 255, 0.28);
+  }
+
+  .details-input:focus {
+    border-color: rgba(255, 230, 0, 0.45);
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .details-select {
+    @apply cursor-pointer;
+  }
+
+  .details-select option {
+    background: #041912;
+    color: #fff;
+  }
+
+  .details-photo {
+    @apply border-b border-white/10 pb-6;
+  }
+
+  .details-photo-row {
+    @apply flex flex-col gap-4 sm:flex-row sm:items-start;
+  }
+
+  .details-photo-source-btns {
+    @apply flex flex-wrap gap-2;
+  }
+
+  .details-source-btn {
+    @apply inline-flex cursor-pointer items-center gap-2 rounded-full border border-white/15 px-4 py-2 font-mono text-[10px] font-bold uppercase tracking-wider text-white/70 transition-colors hover:border-goa-yellow/45 hover:text-goa-yellow;
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .details-photo-error {
+    @apply font-mono text-[10px] font-bold uppercase tracking-wide text-goa-pink;
+  }
+
+  .details-camera-modal {
+    @apply fixed inset-0 z-50 flex items-center justify-center p-4;
+    background: rgba(4, 15, 10, 0.82);
+    backdrop-filter: blur(6px);
+  }
+
+  .details-camera-panel {
+    @apply w-full max-w-md overflow-hidden rounded-2xl border border-white/15;
+    background: rgba(4, 25, 16, 0.95);
+  }
+
+  .details-camera-head {
+    @apply flex items-center justify-between border-b border-white/10 px-4 py-3 font-mono text-[10px] font-bold uppercase tracking-widest text-white/70;
+  }
+
+  .details-camera-close {
+    @apply cursor-pointer rounded-full border border-white/15 px-3 py-1 text-[9px] uppercase text-white/50 hover:text-white;
+  }
+
+  .details-camera-view {
+    @apply relative aspect-[4/5] bg-black;
+  }
+
+  .details-camera-video {
+    @apply h-full w-full object-cover;
+    transform: scaleX(-1);
+  }
+
+  .details-camera-capture {
+    @apply w-full cursor-pointer border-t border-white/10 py-4 font-mono text-xs font-black uppercase tracking-widest text-goa-yellow hover:bg-white/5;
+  }
+
+  .details-photo-box {
+    @apply relative flex shrink-0 items-center justify-center overflow-hidden rounded-xl border border-dashed border-white/25;
+    width: 128px;
+    height: 128px;
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .details-photo-img {
+    @apply h-full w-full object-cover transition-transform duration-100;
+  }
+
+  .details-photo-placeholder {
+    @apply flex flex-col items-center gap-2 font-mono text-[9px] font-bold uppercase tracking-wider text-white/45;
+  }
+
+  .details-photo-placeholder svg {
+    @apply h-7 w-7;
+  }
+
+  .details-photo-controls {
+    @apply flex flex-1 flex-col gap-3;
+  }
+
+  .details-photo-zoom {
+    @apply flex items-center justify-between;
+  }
+
+  .details-photo-zoom-label {
+    @apply font-mono text-[10px] font-bold uppercase tracking-widest text-white/45;
+  }
+
+  .details-photo-zoom-val {
+    @apply font-mono text-xs font-bold tabular-nums text-goa-yellow;
+  }
+
+  .details-photo-btns {
+    @apply flex flex-wrap gap-2;
+  }
+
+  .details-chip-btn {
+    @apply cursor-pointer rounded-full border border-white/15 px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-wide text-white/60 transition-colors hover:border-white/30 hover:text-white;
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .details-chip-danger {
+    @apply hover:border-red-400/40 hover:text-red-300;
+  }
+
+  .details-photo-note {
+    @apply font-mono text-[10px] leading-relaxed text-white/35;
+  }
+
+  .details-avatars {
+    @apply mt-6;
+  }
+
+  .details-avatars-label {
+    @apply mb-3 font-mono text-[10px] font-bold uppercase tracking-widest text-white/40;
+  }
+
+  .details-avatars-grid {
+    @apply grid grid-cols-3 gap-2 sm:grid-cols-6;
+  }
+
+  .details-avatar-btn {
+    @apply flex cursor-pointer flex-col items-center gap-1.5 rounded-xl border border-white/10 p-2 transition-all hover:border-goa-yellow/40;
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .details-avatar-btn.active {
+    @apply border-goa-yellow/60 bg-goa-yellow/10;
+  }
+
+  .details-avatar-thumb {
+    @apply h-10 w-10 rounded-lg object-cover;
+  }
+
+  .details-avatar-btn span {
+    @apply truncate font-mono text-[8px] font-bold uppercase text-white/45;
+  }
+
+  .details-actions {
+    @apply mt-8 flex flex-col items-start gap-2 border-t border-white/10 pt-6;
+  }
+
+  .details-actions-inline {
+    @apply mt-6 border-t-0 pt-0;
+  }
+
+  .details-submit {
+    @apply inline-flex cursor-pointer items-center gap-2 rounded-full border-2 border-black bg-goa-yellow px-6 py-3 font-mono text-[10px] font-black uppercase tracking-widest text-black transition-all hover:-translate-y-0.5 hover:bg-[#ffff33] disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:translate-y-0;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.15) inset, 4px 4px 0 #041912;
+  }
+
+  .details-hint {
+    @apply font-mono text-[10px] font-bold uppercase tracking-wider text-goa-pink/90;
+  }
+
+  .details-squad-meta {
+    @apply mt-4;
+  }
+
+  .details-roster-count {
+    @apply inline-flex rounded-full border border-white/15 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-white/55;
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .details-squad-list {
+    @apply mt-2;
+  }
+
+  .details-squad-list-head {
+    @apply mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between;
+  }
+
+  .details-squad-list-title {
+    @apply mt-1 font-display text-2xl uppercase leading-none text-white sm:text-3xl;
+  }
+
+  .details-squad-badge {
+    @apply self-start rounded-full border border-white/15 px-3 py-1 font-mono text-[9px] font-bold uppercase tracking-wider text-white/45;
+  }
+
+  .details-member-stack {
+    @apply flex flex-col gap-4;
+  }
+
+  .details-member-card {
+    @apply rounded-2xl border border-white/10 p-5;
+    background: rgba(4, 25, 16, 0.55);
+    backdrop-filter: blur(10px);
+  }
+
+  .details-member-head {
+    @apply mb-4 flex items-center justify-between gap-3 border-b border-white/10 pb-3;
+  }
+
+  .details-member-id {
+    @apply flex items-center gap-2;
+  }
+
+  .details-member-num {
+    @apply flex h-7 w-7 items-center justify-center rounded-full bg-goa-yellow font-mono text-[10px] font-black text-black;
+  }
+
+  .details-member-code {
+    @apply font-mono text-[10px] font-bold uppercase tracking-wider text-white/40;
+  }
+
+  .details-member-tools {
+    @apply flex items-center gap-1;
+  }
+
+  .details-tool-btn {
+    @apply flex h-7 w-7 cursor-pointer items-center justify-center rounded-full border border-white/15 font-mono text-xs font-bold text-white/55 transition-colors hover:border-white/30 hover:text-white disabled:cursor-not-allowed disabled:opacity-30;
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .details-tool-danger {
+    @apply hover:border-red-400/40 hover:text-red-300;
+  }
+
+  .details-member-body {
+    @apply grid grid-cols-1 gap-5 lg:grid-cols-[auto_1fr];
+  }
+
+  .details-member-body .details-photo {
+    @apply border-b-0 pb-0;
+  }
+
+  .details-member-body .details-photo-row {
+    @apply flex-col;
+  }
+
+  .details-member-fields {
+    @apply flex flex-col gap-4;
+  }
+
+  .details-add-member {
+    @apply mt-4 flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-white/20 py-3.5 font-mono text-[10px] font-bold uppercase tracking-widest text-white/50 transition-all hover:border-goa-yellow/45 hover:text-goa-yellow;
+    background: rgba(0, 0, 0, 0.15);
+  }
+
+  .details-preview {
+    @apply rounded-2xl border border-white/15 p-5 lg:sticky lg:top-4;
+    background: rgba(4, 25, 16, 0.62);
+    backdrop-filter: blur(12px);
+  }
+
+  .details-preview-head {
+    @apply mb-4 flex items-center justify-between gap-2 border-b border-white/10 pb-3;
+  }
+
+  .details-preview-kicker {
+    @apply font-mono text-[10px] font-bold uppercase tracking-widest text-goa-pink;
+  }
+
+  .details-preview-count {
+    @apply font-mono text-[9px] font-bold uppercase tracking-wider text-white/40;
+  }
+
+  .details-preview-team {
+    @apply font-display text-2xl uppercase leading-none text-goa-yellow;
+  }
+
+  .details-preview-list {
+    @apply mt-4 flex max-h-64 flex-col gap-2 overflow-y-auto p-0;
+    list-style: none;
+  }
+
+  .details-preview-item {
+    @apply flex items-center gap-2 rounded-lg border border-white/10 px-3 py-2;
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .details-preview-index {
+    @apply flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-goa-yellow font-mono text-[9px] font-black text-black;
+  }
+
+  .details-preview-name {
+    @apply min-w-0 flex-1 truncate font-mono text-[10px] font-bold uppercase text-white;
+  }
+
+  .details-preview-role {
+    @apply shrink-0 font-mono text-[8px] font-bold uppercase tracking-wide text-white/40;
+  }
+
+  .details-preview-note {
+    @apply mt-4 border-t border-white/10 pt-3 font-mono text-[9px] leading-relaxed uppercase tracking-wider text-white/35;
+  }
+
+  .sr-only {
+    @apply absolute h-px w-px overflow-hidden whitespace-nowrap border-0 p-0;
+    clip: rect(0, 0, 0, 0);
+    margin: -1px;
+  }
+
+  /* ── Choose mode page ── */
+  .choose-shell {
+    @apply relative flex w-full flex-1 flex-col;
+  }
+
+  .choose-meta {
+    @apply relative z-10 flex flex-wrap items-center justify-center gap-3 border-b border-white/10 px-4 py-2.5 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-white/65;
+    background: rgba(4, 25, 16, 0.48);
+    backdrop-filter: blur(6px);
+  }
+
+  .choose-meta-dot {
+    @apply h-1 w-1 rounded-full bg-goa-yellow/70;
+  }
+
+  .choose-inner {
+    @apply relative z-10 mx-auto flex w-full max-w-6xl flex-1 flex-col px-4 pb-12 pt-6 sm:px-6 sm:pb-16 sm:pt-8 lg:px-8;
+  }
+
+  .choose-head {
+    @apply mx-auto mb-10 max-w-2xl text-center sm:mb-12;
+  }
+
+  .choose-eyebrow {
+    @apply mb-4 flex items-center justify-center gap-2.5 font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-white/45;
+  }
+
+  .choose-title {
+    @apply m-0 font-display uppercase leading-[0.95] text-[#F5F0E6];
+    font-size: clamp(2.75rem, 8vw, 5rem);
+  }
+
+  .choose-title-line {
+    @apply inline-block;
+  }
+
+  .choose-title-or {
+    @apply mx-3 inline-block font-sans text-lg font-medium lowercase tracking-normal text-white/35 sm:text-xl;
+    vertical-align: middle;
+  }
+
+  .choose-title-accent {
+    @apply text-goa-yellow;
+  }
+
+  .choose-lede {
+    @apply mx-auto mt-5 max-w-lg font-sans text-sm leading-relaxed text-white/60 sm:text-[15px];
+  }
+
+  .choose-grid {
+    @apply grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-6;
+  }
+
+  .choose-card {
+    @apply flex cursor-pointer flex-col rounded-2xl border border-white/15 p-6 text-left transition-all duration-200 sm:p-7;
+    background: rgba(4, 25, 16, 0.62);
+    backdrop-filter: blur(12px);
+  }
+
+  .choose-card:hover {
+    @apply -translate-y-1 border-goa-yellow/45;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.28);
+  }
+
+  .choose-card:focus-visible {
+    @apply outline outline-2 outline-offset-2 outline-goa-yellow;
+  }
+
+  .choose-card-solo:hover {
+    background: rgba(4, 25, 16, 0.72);
+  }
+
+  .choose-card-squad:hover {
+    background: rgba(4, 25, 16, 0.72);
+    border-color: rgba(255, 42, 133, 0.35);
+  }
+
+  .choose-card-top {
+    @apply mb-4 flex items-center justify-between;
+  }
+
+  .choose-card-kicker {
+    @apply font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-goa-yellow;
+  }
+
+  .choose-card-arrow {
+    @apply flex h-8 w-8 items-center justify-center rounded-full border border-white/15 text-white/40 transition-all;
+  }
+
+  .choose-card:hover .choose-card-arrow {
+    @apply border-goa-yellow/50 bg-goa-yellow/10 text-goa-yellow;
+  }
+
+  .choose-card-visual {
+    @apply mb-5 flex items-center justify-center rounded-xl border border-white/10 py-4;
+    background: rgba(255, 255, 255, 0.03);
+    min-height: 160px;
+  }
+
+  .choose-illus {
+    @apply h-auto w-full max-w-[240px];
+  }
+
+  .choose-card-body {
+    @apply flex flex-1 flex-col;
+  }
+
+  .choose-card-title {
+    @apply m-0 font-display text-3xl uppercase leading-none text-white sm:text-4xl;
+  }
+
+  .choose-card-sub {
+    @apply mt-2 font-mono text-[10px] font-bold uppercase tracking-widest text-goa-pink;
+  }
+
+  .choose-card-desc {
+    @apply mt-3 font-sans text-sm leading-relaxed text-white/55;
+  }
+
+  .choose-card-features {
+    @apply mt-5 flex flex-col gap-2 p-0;
+    list-style: none;
+  }
+
+  .choose-card-features li {
+    @apply relative pl-4 font-mono text-[10px] font-bold uppercase tracking-wide text-white/45;
+  }
+
+  .choose-card-features li::before {
+    content: '';
+    @apply absolute left-0 top-[0.45em] h-1.5 w-1.5 rounded-full bg-goa-yellow;
+  }
+
+  .choose-card-cta {
+    @apply mt-6 inline-flex items-center gap-2 self-start rounded-full border border-goa-yellow/35 px-5 py-2.5 font-mono text-[10px] font-black uppercase tracking-widest text-goa-yellow transition-all;
+  }
+
+  .choose-card:hover .choose-card-cta {
+    @apply border-goa-yellow bg-goa-yellow text-black;
+  }
+
+  .choose-foot {
+    @apply mt-12 flex flex-wrap items-center justify-center gap-3 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-white/45;
+  }
+
+  .choose-foot-tag {
+    @apply text-goa-yellow;
+  }
+
+  .choose-foot-dot {
+    @apply hidden h-1 w-1 rounded-full bg-white/25 sm:block;
   }
 
   /* ── Step tracker connector ── */
@@ -376,6 +1206,148 @@
 
   .step-connector.pending {
     border-top: 2px dashed rgba(255, 255, 255, 0.25);
+  }
+
+  /* ── Frame section (step 03) ── */
+  .frame-shell {
+    @apply relative z-10 mx-auto w-full max-w-5xl px-4 pb-12 pt-2 sm:px-6 lg:px-8;
+  }
+
+  .frame-hero {
+    @apply mb-8 text-center sm:mb-10;
+  }
+
+  .frame-hero-kicker {
+    @apply mb-4 flex flex-wrap items-center justify-center gap-3 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-goa-pink;
+  }
+
+  .frame-hero-title {
+    @apply m-0 font-display uppercase leading-[0.92];
+    font-size: clamp(2.75rem, 9vw, 4.75rem);
+  }
+
+  .frame-hero-title-accent {
+    @apply block text-goa-yellow;
+    text-shadow: 3px 3px 0 rgba(4, 25, 16, 0.85);
+  }
+
+  .frame-hero-title-main {
+    @apply block text-white;
+    text-shadow: 3px 3px 0 rgba(4, 25, 16, 0.85);
+  }
+
+  .frame-hero-lede {
+    @apply mx-auto mt-5 max-w-xl font-mono text-xs leading-relaxed text-white/55 sm:text-sm;
+  }
+
+  .frame-filters {
+    @apply mb-6 flex flex-wrap items-center justify-center gap-2;
+  }
+
+  .frame-filter {
+    @apply cursor-pointer rounded-full border border-white/20 px-4 py-2 font-mono text-[10px] font-bold uppercase tracking-widest text-white/65 transition-all hover:border-white/35 hover:text-white;
+    background: rgba(4, 25, 16, 0.45);
+  }
+
+  .frame-filter.active {
+    @apply border-goa-yellow bg-goa-yellow text-black;
+    box-shadow: 3px 3px 0 #041912;
+  }
+
+  .frame-pick-grid {
+    @apply grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5;
+  }
+
+  .frame-pick-card {
+    @apply relative flex cursor-pointer flex-col overflow-hidden rounded-2xl border-2 border-white/10 p-4 text-left transition-all hover:border-white/25;
+    background: rgba(4, 25, 16, 0.55);
+    backdrop-filter: blur(8px);
+  }
+
+  .frame-pick-card.selected {
+    @apply border-goa-yellow;
+    background: rgba(255, 230, 0, 0.08);
+    box-shadow: 0 0 0 1px rgba(255, 230, 0, 0.2), 0 8px 32px rgba(0, 0, 0, 0.25);
+  }
+
+  .frame-pick-check {
+    @apply absolute right-3 top-3 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-goa-pink text-sm font-black text-white;
+    box-shadow: 2px 2px 0 #041912;
+  }
+
+  .frame-pick-preview {
+    @apply relative mb-3 flex w-full items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-black/25;
+  }
+
+  .frame-pick-canvas {
+    @apply block h-full w-full object-contain;
+  }
+
+  .frame-pick-selected-pill {
+    @apply mx-auto mb-3 inline-flex rounded-full border-2 border-black bg-goa-yellow px-4 py-1 font-mono text-[9px] font-black uppercase tracking-widest text-black;
+    box-shadow: 2px 2px 0 #041912;
+  }
+
+  .frame-pick-copy {
+    @apply flex flex-col gap-1.5;
+  }
+
+  .frame-pick-name {
+    @apply m-0 font-display text-lg uppercase leading-none text-white;
+  }
+
+  .frame-pick-card.selected .frame-pick-name {
+    @apply text-goa-yellow;
+  }
+
+  .frame-pick-desc {
+    @apply m-0 font-sans text-xs leading-relaxed text-white/45;
+  }
+
+  .frame-pick-card.selected .frame-pick-desc {
+    @apply text-white/60;
+  }
+
+  .frame-member-tabs {
+    @apply mb-5 rounded-xl border border-white/10 p-3;
+    background: rgba(4, 25, 16, 0.55);
+  }
+
+  .frame-member-tabs-centered {
+    @apply mx-auto mb-6 max-w-xl;
+  }
+
+  .frame-member-tabs-label {
+    @apply mb-2 block text-center font-mono text-[9px] font-bold uppercase tracking-widest text-white/40;
+  }
+
+  .frame-member-tabs-row {
+    @apply flex flex-wrap justify-center gap-2;
+  }
+
+  .frame-member-tab {
+    @apply cursor-pointer rounded-full border border-white/15 px-3 py-1 font-mono text-[9px] font-bold uppercase tracking-wide text-white/55 transition-colors hover:border-white/30 hover:text-white;
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .frame-member-tab.active {
+    @apply border-goa-yellow/50 bg-goa-yellow/10 text-goa-yellow;
+  }
+
+  .frame-foot {
+    @apply mt-10 flex flex-col items-center gap-4 border-t border-white/10 pt-8 text-center;
+  }
+
+  .frame-foot-selected {
+    @apply m-0 font-mono text-[10px] font-bold uppercase tracking-widest text-white/45;
+  }
+
+  .frame-foot-selected strong {
+    @apply text-goa-yellow;
+  }
+
+  .frame-foot-cta {
+    @apply mx-auto;
   }
 }
 
