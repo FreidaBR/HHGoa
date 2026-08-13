@@ -1,4 +1,5 @@
 import React from 'react';
+import MainHeaderCard from './MainHeaderCard';
 import TeamPreview from './TeamPreview';
 import TeammateList from './TeammateList';
 import { IconLotus } from './icons/HomeIcons';

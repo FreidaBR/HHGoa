@@ -27,9 +27,14 @@ const TeammateList = ({ members, updateMember, addMember, removeMember, moveMemb
         ))}
       </div>
 
-      <button type="button" className="details-add-member" onClick={addMember}>
+      <button
+        type="button"
+        className="details-add-member"
+        onClick={addMember}
+        disabled={members.length >= 4}
+      >
         <IconPlus />
-        Add teammate
+        {members.length >= 4 ? 'Squad full (4 max)' : 'Add teammate'}
       </button>
     </div>
   );

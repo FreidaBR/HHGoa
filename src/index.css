@@ -5,6 +5,7 @@
 @layer base {
   :root {
     --bg-color: #053b27;
+    --brand-mat: #1b5e3a;
     --card-bg: #faf3d2;
     --accent-yellow: #ffe600;
     --accent-pink: #ff2a85;
@@ -439,18 +440,76 @@
     letter-spacing: 0.01em;
   }
 
-  .hero-line {
-    @apply block;
+  .hero-headline-brand {
+    @apply block normal-case;
+    font-size: unset;
   }
 
-  .hero-line-accent {
-    @apply text-goa-yellow;
+  .hero-brand-lockup {
+    position: relative;
+    display: inline-block;
+    width: min(100%, 720px);
+    max-width: 100%;
+    line-height: 0;
+    overflow: visible;
+    background-color: var(--brand-mat);
+    padding-bottom: 3rem;
+    isolation: isolate;
   }
 
-  .hero-times {
-    @apply mx-1 inline-block font-sans font-light text-white/35;
-    font-size: 0.55em;
+  .hero-brand-hacker-house {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: auto;
+    display: block;
+    mix-blend-mode: lighten;
+  }
+
+  .hero-brand-goa-wrap {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 5;
+    width: 26%;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+  }
+
+  .hero-brand-goa {
+    width: 100%;
+    height: auto;
+    display: block;
+    -webkit-mask-image: url('/assets/goa-script.png');
+    mask-image: url('/assets/goa-script.png');
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+  }
+
+  .hero-brand-goa-wrap--float {
+    animation: hero-goa-float 4s ease-in-out infinite;
+  }
+
+  @keyframes hero-goa-float {
+    0%,
+    100% {
+      transform: translate(-50%, -50%);
+    }
+
+    50% {
+      transform: translate(-50%, calc(-50% - 7px));
+    }
+  }
+
+  .hero-brand-goa-inline {
+    display: inline-block;
+    height: 1.15em;
+    width: auto;
     vertical-align: middle;
+    margin-left: 0.12em;
+    mix-blend-mode: screen;
   }
 
   .hero-tagline {
@@ -504,12 +563,9 @@
     @apply mt-0.5 font-display text-2xl uppercase tracking-wide text-white sm:text-3xl;
   }
 
-  .hero-goa-script {
-    @apply ml-2 inline-block font-sans text-goa-pink;
-    font-size: 0.85em;
-    transform: rotate(-3deg);
-    text-shadow: 0 0 0 transparent;
-    -webkit-text-stroke: 0;
+  .hero-card-title .hero-brand-goa-inline {
+    height: 1.05em;
+    margin-left: 0.1em;
   }
 
   .hero-card-divider {
@@ -811,12 +867,12 @@
     background: rgba(255, 255, 255, 0.04);
   }
 
-  .details-photo-img {
-    @apply h-full w-full object-cover transition-transform duration-100;
+  .details-photo-canvas {
+    @apply block h-full w-full rounded-xl;
   }
 
   .details-photo-placeholder {
-    @apply flex flex-col items-center gap-2 font-mono text-[9px] font-bold uppercase tracking-wider text-white/45;
+    @apply absolute inset-0 flex flex-col items-center justify-center gap-2 font-mono text-[9px] font-bold uppercase tracking-wider text-white/45;
   }
 
   .details-photo-placeholder svg {
@@ -1348,6 +1404,179 @@
 
   .frame-foot-cta {
     @apply mx-auto;
+  }
+
+  .id-card-stage {
+    @apply mx-auto flex w-full max-w-md flex-col items-center gap-8;
+  }
+
+  .id-card-stage--portrait {
+    @apply max-w-sm;
+  }
+
+  .id-card-preview-wrap {
+    @apply relative w-full overflow-hidden rounded-2xl border border-white/15 p-3;
+    background: rgba(0, 0, 0, 0.28);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.35);
+    min-height: 220px;
+  }
+
+  .id-card-preview-status {
+    @apply pointer-events-none absolute inset-0 z-10 flex items-center justify-center font-mono text-[10px] font-bold uppercase tracking-widest text-white/50;
+  }
+
+  .id-card-preview-status--error {
+    @apply text-goa-pink;
+  }
+
+  .id-card-preview-canvas {
+    @apply relative z-0 block w-full rounded-xl;
+    background: #f5f2e7;
+  }
+
+  .id-card-shape-picker {
+    @apply flex w-full flex-col items-center gap-3 text-center;
+  }
+
+  .id-card-shape-label {
+    @apply m-0 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-white/45;
+  }
+
+  .id-card-size-note {
+    @apply m-0 font-mono text-[9px] font-bold uppercase tracking-widest text-white/35;
+  }
+
+  .id-card-shape-btns {
+    @apply flex gap-3;
+  }
+
+  .id-card-shape-btn {
+    @apply cursor-pointer rounded-full border border-white/20 px-8 py-2.5 font-mono text-[10px] font-black uppercase tracking-widest text-white/65 transition-all hover:border-white/35 hover:text-white;
+    background: rgba(4, 25, 16, 0.5);
+  }
+
+  .id-card-shape-btn.active {
+    @apply border-goa-yellow bg-goa-yellow text-black;
+    box-shadow: 3px 3px 0 #041912;
+  }
+
+  /* ── Generate page (step 04) ── */
+  .generate-shell {
+    @apply relative z-10 mx-auto w-full max-w-5xl px-4 pb-16 pt-2 sm:px-6 lg:px-8;
+  }
+
+  .generate-hero {
+    @apply mb-8 text-center sm:mb-10;
+  }
+
+  .generate-kicker {
+    @apply mb-3 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-goa-pink;
+  }
+
+  .generate-title {
+    @apply m-0 font-display uppercase leading-[0.92] text-goa-yellow;
+    font-size: clamp(2.5rem, 8vw, 4rem);
+    text-shadow: 3px 3px 0 rgba(4, 25, 16, 0.85);
+  }
+
+  .generate-lede {
+    @apply mx-auto mt-4 max-w-xl font-mono text-xs leading-relaxed text-white/60 sm:text-sm;
+  }
+
+  .generate-zip-bar {
+    @apply mb-8 flex flex-col items-start justify-between gap-4 rounded-2xl border border-goa-yellow/35 p-5 sm:flex-row sm:items-center;
+    background: rgba(4, 25, 16, 0.55);
+  }
+
+  .generate-zip-title {
+    @apply m-0 font-display text-xl uppercase text-goa-yellow sm:text-2xl;
+  }
+
+  .generate-zip-desc {
+    @apply mt-1 font-mono text-[11px] text-white/60;
+  }
+
+  .generate-zip-btn {
+    @apply cursor-pointer rounded-full border-2 border-goa-yellow bg-goa-yellow px-6 py-3 font-mono text-[10px] font-black uppercase tracking-widest text-black transition-opacity disabled:cursor-not-allowed disabled:opacity-40;
+    box-shadow: 3px 3px 0 #041912;
+  }
+
+  .generate-badge-list {
+    @apply flex w-full flex-col gap-8;
+  }
+
+  .generate-badge-card {
+    @apply rounded-2xl border border-white/15 p-5 sm:p-6;
+    background: rgba(4, 25, 16, 0.55);
+  }
+
+  .generate-badge-head {
+    @apply mb-4 flex flex-wrap items-center justify-between gap-3;
+  }
+
+  .generate-badge-identity {
+    @apply flex flex-wrap items-center gap-2 font-mono text-sm font-black uppercase text-white;
+  }
+
+  .generate-badge-role {
+    @apply rounded px-2 py-0.5 text-[10px] text-white;
+    background: #ff2a85;
+  }
+
+  .generate-badge-id {
+    @apply rounded border border-white/20 bg-black/40 px-3 py-1 font-mono text-[10px] font-black text-goa-yellow;
+  }
+
+  .generate-badge-canvas-wrap {
+    @apply relative mx-auto mb-5 overflow-hidden rounded-xl border border-white/10 p-3;
+    background: rgba(0, 0, 0, 0.28);
+    max-width: 420px;
+  }
+
+  .generate-badge-canvas {
+    @apply block w-full rounded-lg;
+    background: #f5f2e7;
+  }
+
+  .generate-badge-status {
+    @apply pointer-events-none absolute inset-0 z-10 flex items-center justify-center font-mono text-[10px] font-bold uppercase tracking-widest text-white/50;
+  }
+
+  .generate-badge-status--error {
+    @apply text-goa-pink;
+  }
+
+  .generate-badge-actions {
+    @apply flex flex-wrap items-center justify-center gap-3;
+  }
+
+  .generate-badge-download {
+    @apply inline-flex cursor-pointer items-center rounded-full border-2 border-goa-yellow bg-goa-yellow px-6 py-3 font-mono text-[10px] font-black uppercase tracking-widest text-black no-underline;
+    box-shadow: 3px 3px 0 #041912;
+  }
+
+  .generate-badge-share {
+    @apply inline-flex cursor-pointer items-center rounded-full border border-white/25 px-5 py-3 font-mono text-[10px] font-black uppercase tracking-widest text-white no-underline transition-colors hover:border-white/40;
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .generate-badge-copy {
+    @apply cursor-pointer rounded-full border border-white/20 px-4 py-3 font-mono text-[10px] font-bold uppercase tracking-widest text-white/70 transition-colors hover:text-white;
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .generate-foot {
+    @apply mt-10 flex flex-wrap justify-center gap-4;
+  }
+
+  .generate-foot-btn {
+    @apply cursor-pointer rounded-full border border-white/25 px-6 py-3 font-mono text-[10px] font-bold uppercase tracking-widest text-white/75 transition-colors hover:border-white/40 hover:text-white;
+    background: rgba(4, 25, 16, 0.5);
+  }
+
+  .generate-foot-btn--primary {
+    @apply border-goa-yellow bg-goa-yellow text-black;
+    box-shadow: 3px 3px 0 #041912;
   }
 }
 

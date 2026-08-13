@@ -1,6 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { soundFX } from '../utils/sound';
+import { drawImageCover } from '../utils/photoCrop';
 import { IconUpload, IconCamera } from './icons/DetailsIcons';
+
+const PREVIEW_SIZE = 128;
 
 const readFileAsDataUrl = (file) =>
   new Promise((resolve, reject) => {
@@ -12,10 +15,40 @@ const readFileAsDataUrl = (file) =>
 
 const DetailsPhotoPicker = ({ photo, zoom = 1, onPhotoChange, onZoomChange, compact = false }) => {
   const fileInputRef = useRef(null);
+  const previewCanvasRef = useRef(null);
   const videoRef = useRef(null);
   const streamRef = useRef(null);
   const [cameraOpen, setCameraOpen] = useState(false);
   const [cameraError, setCameraError] = useState('');
+
+  useEffect(() => {
+    const canvas = previewCanvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    const size = PREVIEW_SIZE;
+    canvas.width = size;
+    canvas.height = size;
+
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.04)';
+    ctx.fillRect(0, 0, size, size);
+
+    if (!photo) return;
+
+    const img = new Image();
+    img.onload = () => {
+      ctx.clearRect(0, 0, size, size);
+      ctx.fillStyle = '#ddd8ce';
+      ctx.fillRect(0, 0, size, size);
+      drawImageCover(ctx, img, 0, 0, size, size, zoom || 1);
+    };
+    img.onerror = () => {
+      ctx.clearRect(0, 0, size, size);
+      ctx.fillStyle = '#ddd8ce';
+      ctx.fillRect(0, 0, size, size);
+    };
+    img.src = photo;
+  }, [photo, zoom]);
 
   const stopCamera = () => {
     streamRef.current?.getTracks().forEach((track) => track.stop());
@@ -104,14 +137,14 @@ const DetailsPhotoPicker = ({ photo, zoom = 1, onPhotoChange, onZoomChange, comp
           />
 
           <div className={`details-photo-box ${photo ? 'has-photo' : ''}`} aria-label="Photo preview">
-            {photo ? (
-              <img
-                src={photo}
-                alt=""
-                className="details-photo-img"
-                style={{ transform: `scale(${zoom || 1})` }}
-              />
-            ) : (
+            <canvas
+              ref={previewCanvasRef}
+              className="details-photo-canvas"
+              width={PREVIEW_SIZE}
+              height={PREVIEW_SIZE}
+              aria-hidden={!photo}
+            />
+            {!photo && (
               <span className="details-photo-placeholder">
                 <IconCamera />
                 <span>No photo yet</span>

@@ -42,8 +42,7 @@ function App() {
 
   // Frame Customization State
   const [frameConfig, setFrameConfig] = useState({
-    frameId: 'arch-badge',
-    themeId: 'arch-badge',
+    photoShape: 'square',
   });
 
   const navigateTo = (view) => {
@@ -59,6 +58,7 @@ function App() {
   };
 
   const addSquadMember = () => {
+    if (squadMembers.length >= 4) return;
     const newId = squadMembers.length > 0 ? Math.max(...squadMembers.map(m => m.id)) + 1 : 1;
     const randomAssignedId = `HH-26-${1000 + Math.floor(Math.random() * 9000)}`;
     setSquadMembers([
@@ -108,7 +108,7 @@ function App() {
     return <Home navigateTo={navigateTo} />;
   }
 
-  const isPosterFlow = ['choose', 'solo-details', 'squad-details', 'frame'].includes(currentView);
+  const isPosterFlow = ['choose', 'solo-details', 'squad-details', 'frame', 'generate'].includes(currentView);
   const isPosterBgLow = ['choose', 'solo-details'].includes(currentView);
 
   return (

@@ -8,6 +8,7 @@ import {
   IconSquad,
   IconTheme,
   IconLotus,
+  BrandLockup,
   GoaScript,
 } from './icons/HomeIcons';
 
@@ -15,7 +16,7 @@ const FEATURES = [
   {
     icon: IconExport,
     label: '4K Export',
-    desc: '2400×1500 PNG passes, print-ready or share on X.',
+    desc: '60×90 mm poster-style passes, print-ready or share on X.',
   },
   {
     icon: IconSquad,
@@ -110,12 +111,8 @@ const Home = ({ navigateTo }) => {
               <span>Open Trials · Task #1</span>
             </div>
 
-            <h1 className="hero-headline">
-              <span className="hero-line">BEACH</span>
-              <span className="hero-line hero-line-accent">
-                <span className="hero-times">×</span>
-                BYTES
-              </span>
+            <h1 className="hero-headline hero-headline-brand">
+              <BrandLockup />
             </h1>
 
             <p className="hero-tagline">SUN · CODE · SURF</p>

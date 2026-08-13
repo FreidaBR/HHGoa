@@ -1,72 +1,46 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { FRAMES, FRAME_FILTERS, getFrame } from '../data/frameThemes';
+import { BADGE, PHOTO_SHAPES, getPhotoShape, getPreviewSize } from '../data/frameThemes';
 import { drawBadge } from '../utils/badgeDraw';
 import { soundFX } from '../utils/sound';
 import { IconArrow } from './icons/DetailsIcons';
 
-export { FRAMES as THEMES };
+const PREVIEW = getPreviewSize(BADGE.previewW);
 
-const FrameCard = ({ frame, selected, onSelect, previewMember, teamName }) => {
-  const canvasRef = useRef(null);
+const FrameSelector = ({ members, teamName, generationMode, frameConfig, setFrameConfig, navigateTo }) => {
+  const [selectedMemberIndex, setSelectedMemberIndex] = useState(0);
+  const [previewState, setPreviewState] = useState('loading');
+  const previewCanvasRef = useRef(null);
+
+  const activeMember = members[selectedMemberIndex] || members[0] || { name: 'Builder' };
+  const photoShape = getPhotoShape(frameConfig.photoShape);
 
   useEffect(() => {
     let cancelled = false;
     const render = async () => {
-      const canvas = canvasRef.current;
+      const canvas = previewCanvasRef.current;
       if (!canvas || cancelled) return;
-      const previewW = frame.id === 'landscape-frame' ? 400 : frame.id === 'circle-pfp' ? 280 : frame.id === 'slim-badge' ? 210 : 280;
-      const previewH = frame.id === 'landscape-frame' ? 225 : frame.id === 'circle-pfp' ? 280 : frame.id === 'slim-badge' ? 360 : 360;
-      await drawBadge(canvas, {
-        member: previewMember,
-        teamName,
-        frame,
-        width: previewW,
-        height: previewH,
-      });
+      setPreviewState('loading');
+      try {
+        await drawBadge(canvas, {
+          member: activeMember,
+          teamName,
+          photoShape,
+          width: PREVIEW.width,
+          height: PREVIEW.height,
+        });
+        if (!cancelled) setPreviewState('ready');
+      } catch (err) {
+        console.error('Badge preview failed:', err);
+        if (!cancelled) setPreviewState('error');
+      }
     };
     render();
     return () => { cancelled = true; };
-  }, [frame, previewMember, teamName, selected]);
+  }, [activeMember, teamName, photoShape]);
 
-  return (
-    <button
-      type="button"
-      className={`frame-pick-card ${selected ? 'selected' : ''}`}
-      onClick={() => onSelect(frame.id)}
-      aria-pressed={selected}
-    >
-      {selected && (
-        <span className="frame-pick-check" aria-hidden="true">
-          ✓
-        </span>
-      )}
-      <div className="frame-pick-preview" style={{ aspectRatio: frame.previewAspect }}>
-        <canvas ref={canvasRef} className="frame-pick-canvas" />
-      </div>
-      {selected && <span className="frame-pick-selected-pill">Selected</span>}
-      <div className="frame-pick-copy">
-        <h3 className="frame-pick-name">{frame.name}</h3>
-        <p className="frame-pick-desc">{frame.desc}</p>
-      </div>
-    </button>
-  );
-};
-
-const FrameSelector = ({ members, teamName, generationMode, frameConfig, setFrameConfig, navigateTo }) => {
-  const [filter, setFilter] = useState('all');
-  const [selectedMemberIndex, setSelectedMemberIndex] = useState(0);
-
-  const activeMember = members[selectedMemberIndex] || members[0] || { name: 'Aarav' };
-  const currentFrame = getFrame(frameConfig.frameId || frameConfig.themeId);
-
-  const visibleFrames = useMemo(() => {
-    if (filter === 'all') return FRAMES;
-    return FRAMES.filter((f) => f.category === filter);
-  }, [filter]);
-
-  const selectFrame = (frameId) => {
+  const setShape = (shape) => {
     soundFX.playClick();
-    setFrameConfig({ ...frameConfig, frameId, themeId: frameId });
+    setFrameConfig((prev) => ({ ...prev, photoShape: shape }));
   };
 
   const handleProceed = () => {
@@ -80,14 +54,14 @@ const FrameSelector = ({ members, teamName, generationMode, frameConfig, setFram
         <p className="frame-hero-kicker">
           <span>Step 03</span>
           <span className="details-meta-dot" aria-hidden="true" />
-          <span>One frame fits all</span>
+          <span>Builder pass</span>
         </p>
         <h1 className="frame-hero-title">
-          <span className="frame-hero-title-accent">Choose your</span>
-          <span className="frame-hero-title-main">Frame</span>
+          <span className="frame-hero-title-accent">Photo</span>
+          <span className="frame-hero-title-main">Shape</span>
         </h1>
         <p className="frame-hero-lede">
-          Every frame is a real collectible badge. Pick one, fit your photo, and watch it come alive.
+          Skate-poster builder pass · {BADGE.label} · pick square or round photo crop.
         </p>
       </div>
 
@@ -112,43 +86,50 @@ const FrameSelector = ({ members, teamName, generationMode, frameConfig, setFram
         </div>
       )}
 
-      <div className="frame-filters" role="tablist" aria-label="Frame categories">
-        {FRAME_FILTERS.map((item) => (
-          <button
-            key={item.id}
-            type="button"
-            role="tab"
-            aria-selected={filter === item.id}
-            className={`frame-filter ${filter === item.id ? 'active' : ''}`}
-            onClick={() => {
-              soundFX.playClick();
-              setFilter(item.id);
-            }}
-          >
-            {item.label}
-          </button>
-        ))}
-      </div>
-
-      <div className="frame-pick-grid">
-        {visibleFrames.map((frame) => (
-          <FrameCard
-            key={frame.id}
-            frame={frame}
-            selected={(frameConfig.frameId || frameConfig.themeId) === frame.id}
-            onSelect={selectFrame}
-            previewMember={activeMember}
-            teamName={teamName}
+      <div className="id-card-stage id-card-stage--portrait">
+        <div className="id-card-preview-wrap">
+          {previewState === 'loading' && (
+            <p className="id-card-preview-status" aria-live="polite">Rendering badge…</p>
+          )}
+          {previewState === 'error' && (
+            <p className="id-card-preview-status id-card-preview-status--error" aria-live="polite">
+              Preview failed — hard refresh and try again.
+            </p>
+          )}
+          <canvas
+            ref={previewCanvasRef}
+            className="id-card-preview-canvas"
+            width={PREVIEW.width}
+            height={PREVIEW.height}
+            style={{ aspectRatio: PREVIEW.aspect }}
+            aria-label="Event badge preview"
           />
-        ))}
+        </div>
+
+        <div className="id-card-shape-picker">
+          <p className="id-card-shape-label">Photo shape</p>
+          <div className="id-card-shape-btns" role="group" aria-label="Photo shape">
+            {PHOTO_SHAPES.map((opt) => (
+              <button
+                key={opt.id}
+                type="button"
+                className={`id-card-shape-btn ${photoShape === opt.id ? 'active' : ''}`}
+                onClick={() => setShape(opt.id)}
+                aria-pressed={photoShape === opt.id}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+          <p className="id-card-size-note">
+            Export: {BADGE.exportW}×{BADGE.exportH} px · {BADGE.label}
+          </p>
+        </div>
       </div>
 
       <div className="frame-foot">
-        <p className="frame-foot-selected">
-          Current: <strong>{currentFrame.name}</strong>
-        </p>
         <button type="button" className="details-submit frame-foot-cta" onClick={handleProceed}>
-          Generate with {currentFrame.name}
+          Generate passport
           <IconArrow />
         </button>
       </div>

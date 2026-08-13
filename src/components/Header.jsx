@@ -1,7 +1,7 @@
 import React from 'react';
 
 const Header = ({ navigateTo, currentView, generationMode }) => {
-  const isPosterHeader = ['choose', 'solo-details', 'squad-details', 'frame'].includes(currentView);
+  const isPosterHeader = ['choose', 'solo-details', 'squad-details', 'frame', 'generate'].includes(currentView);
 
   let backLabel = 'Back to Choose Mode';
   let backTarget = 'choose';

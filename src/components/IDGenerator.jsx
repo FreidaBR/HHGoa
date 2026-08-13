@@ -1,38 +1,48 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
-import { getFrame } from '../data/frameThemes';
+import { getBadgeSize, getPhotoShape } from '../data/frameThemes';
 import { drawBadge } from '../utils/badgeDraw';
-import BitmojiAvatarCard from './BitmojiAvatarCard';
 import { soundFX } from '../utils/sound';
 
 const SingleBadgeCard = ({ member, teamName, frameConfig, onRendered }) => {
   const canvasRef = useRef(null);
+  const onRenderedRef = useRef(onRendered);
   const [downloadUrl, setDownloadUrl] = useState('');
+  const [renderState, setRenderState] = useState('loading');
   const [copied, setCopied] = useState(false);
-  const currentFrame = getFrame(frameConfig.frameId || frameConfig.themeId);
+  const photoShape = getPhotoShape(frameConfig.photoShape);
+  const spec = getBadgeSize();
+
+  onRenderedRef.current = onRendered;
 
   useEffect(() => {
     let isMounted = true;
     const render = async () => {
       const canvas = canvasRef.current;
       if (!canvas) return;
-      await drawBadge(canvas, {
-        member,
-        teamName,
-        frame: currentFrame,
-        width: currentFrame.exportW,
-        height: currentFrame.exportH,
-      });
-      if (isMounted) {
+      setRenderState('loading');
+      try {
+        await drawBadge(canvas, {
+          member,
+          teamName,
+          photoShape,
+          width: spec.exportW,
+          height: spec.exportH,
+        });
+        if (!isMounted) return;
         const dataUrl = canvas.toDataURL('image/png');
         setDownloadUrl(dataUrl);
-        if (onRendered) onRendered(member.id, dataUrl);
+        setRenderState('ready');
+        onRenderedRef.current?.(member.id, dataUrl);
+      } catch (err) {
+        console.error('Badge export failed:', err);
+        if (isMounted) setRenderState('error');
       }
     };
     render();
     return () => { isMounted = false; };
-  }, [member, teamName, frameConfig, currentFrame, onRendered]);
+  }, [member, teamName, photoShape, spec.exportW, spec.exportH]);
 
   const fileName = `${member.name ? member.name.replace(/\s+/g, '_') : 'ID'}_Goa2026.png`;
 
@@ -47,38 +57,43 @@ const SingleBadgeCard = ({ member, teamName, frameConfig, onRendered }) => {
   };
 
   return (
-    <div className="flex flex-col items-center bg-black/40 p-6 rounded-2xl neo-border w-full max-w-4xl mx-auto mb-8 border-2 border-black">
-      <div className="flex justify-between items-center w-full mb-4">
-        <div className="font-mono text-sm font-black uppercase text-yellow-300 flex items-center gap-2">
-          <span>👤 {member.name || 'Anonymous Builder'}</span>
-          <span className="bg-pink px-2 py-0.5 rounded text-white text-xs" style={{ backgroundColor: '#ff2a85' }}>{member.role || 'Builder'}</span>
+    <div className="generate-badge-card">
+      <div className="generate-badge-head">
+        <div className="generate-badge-identity">
+          <span>{member.name || 'Anonymous Builder'}</span>
+          <span className="generate-badge-role">{member.role || 'Builder'}</span>
         </div>
-        <div className="font-mono text-xs bg-black text-[#ffe600] px-3 py-1 rounded font-black border border-white/20">
-          {member.assignedId}
-        </div>
+        <span className="generate-badge-id">{member.assignedId}</span>
       </div>
 
-      {/* 4K Canvas Output Container */}
-      <div className="w-full flex justify-center bg-black/60 p-3 rounded-xl border border-black mb-6">
-        <canvas 
-          ref={canvasRef} 
-          className="w-full neo-shadow rounded-lg border-2 border-black max-w-[760px]"
-          style={{ aspectRatio: `${currentFrame.exportW} / ${currentFrame.exportH}` }}
+      <div className="generate-badge-canvas-wrap">
+        {renderState === 'loading' && (
+          <p className="generate-badge-status" aria-live="polite">Pressing badge…</p>
+        )}
+        {renderState === 'error' && (
+          <p className="generate-badge-status generate-badge-status--error" aria-live="polite">
+            Badge failed to render — refresh and try again.
+          </p>
+        )}
+        <canvas
+          ref={canvasRef}
+          className="generate-badge-canvas"
+          width={spec.exportW}
+          height={spec.exportH}
+          style={{ aspectRatio: spec.previewAspect }}
+          aria-label={`Badge for ${member.name || 'builder'}`}
         />
       </div>
 
-      {/* Action Buttons: Single PNG Download & X Share Intent */}
-      <div className="flex flex-wrap justify-center items-center gap-4 w-full">
+      <div className="generate-badge-actions">
         {downloadUrl && (
-          <a 
-            href={downloadUrl} 
+          <a
+            href={downloadUrl}
             download={fileName}
             onClick={() => soundFX.playStamp()}
-            className="btn-primary neo-border text-sm py-3.5 px-8 font-mono font-black flex items-center gap-2"
-            style={{ textDecoration: 'none' }}
+            className="generate-badge-download"
           >
-            <span>Download High-Res 4K PNG</span>
-            <span>&darr;</span>
+            Download PNG ({spec.exportW}×{spec.exportH} · {spec.label})
           </a>
         )}
 
@@ -87,19 +102,13 @@ const SingleBadgeCard = ({ member, teamName, frameConfig, onRendered }) => {
           target="_blank"
           rel="noopener noreferrer"
           onClick={() => soundFX.playClick()}
-          className="btn-secondary neo-border-sm bg-[#1DA1F2] text-white hover:bg-[#0c85d0] text-sm py-3.5 px-6 font-mono font-black flex items-center gap-2"
-          style={{ textDecoration: 'none' }}
+          className="generate-badge-share"
         >
-          <span>Share on X (#FrameInGoa)</span>
-          <span>↗</span>
+          Share on X (#FrameInGoa)
         </a>
 
-        <button
-          type="button"
-          onClick={copyShareText}
-          className="btn-secondary text-xs py-3 px-4 font-mono font-bold"
-        >
-          {copied ? '✓ Text Copied!' : '📋 Copy Share Copy'}
+        <button type="button" onClick={copyShareText} className="generate-badge-copy">
+          {copied ? '✓ Text Copied!' : 'Copy share text'}
         </button>
       </div>
     </div>
@@ -114,11 +123,17 @@ const IDGenerator = ({ teamName, members, frameConfig, navigateTo }) => {
     soundFX.playFanfare();
   }, []);
 
-  const handleBadgeRendered = (id, dataUrl) => {
-    setRenderedBadges((prev) => ({ ...prev, [id]: dataUrl }));
-  };
+  const handleBadgeRendered = useCallback((id, dataUrl) => {
+    setRenderedBadges((prev) => {
+      if (prev[id] === dataUrl) return prev;
+      return { ...prev, [id]: dataUrl };
+    });
+  }, []);
+
+  const allRendered = members.length > 0 && members.every((m) => renderedBadges[m.id]);
 
   const handleDownloadAllZip = async () => {
+    if (!allRendered) return;
     soundFX.playStamp();
     setIsZipping(true);
     try {
@@ -145,88 +160,68 @@ const IDGenerator = ({ teamName, members, frameConfig, navigateTo }) => {
   };
 
   return (
-    <div className="flex flex-col items-center w-full max-w-5xl mx-auto py-6 fade-in select-none">
-      
-      {/* Title */}
-      <div className="text-center mb-8">
-        <div className="text-pink font-mono text-xs font-black uppercase tracking-widest mb-2" style={{ color: 'var(--accent-pink)' }}>
-          🎉 Passport Generation Complete
-        </div>
-        <h1 
-          className="font-display uppercase text-yellow mb-2"
-          style={{ fontSize: 'clamp(2.5rem, 7vw, 4.5rem)', color: 'var(--accent-yellow)', WebkitTextStroke: '2px #000' }}
-        >
-          Your Badges Are Pressed!
-        </h1>
-        <p className="font-mono text-xs sm:text-sm text-white/90 max-w-lg mx-auto">
-          High-resolution collectible builder passports ready for Hacker House Goa 2026.
+    <div className="generate-shell">
+      <div className="generate-hero">
+        <p className="generate-kicker">Step 04 · Complete</p>
+        <h1 className="generate-title">Your badges are pressed</h1>
+        <p className="generate-lede">
+          High-resolution event badges for Hacker House Goa 2026
+          {members.length > 1 ? ` — ${members.length} builders in this batch.` : '.'}
         </p>
       </div>
 
-      {/* Batch Zip Button for Squads */}
       {members.length > 1 && (
-        <div className="dark-card neo-shadow-lg w-full max-w-4xl p-6 mb-8 flex flex-col sm:flex-row justify-between items-center gap-4 border-2 border-yellow-300" style={{ borderRadius: '20px' }}>
+        <div className="generate-zip-bar">
           <div>
-            <h3 className="font-display text-2xl uppercase text-yellow-300">
-              Download Full Squad Package (.ZIP)
-            </h3>
-            <p className="font-mono text-xs text-white/80">
-              Get all {members.length} builder passes in one high-res ZIP package.
+            <h2 className="generate-zip-title">Squad package</h2>
+            <p className="generate-zip-desc">
+              Download all {members.length} badges in one ZIP
+              {!allRendered && ' — waiting for renders to finish…'}
             </p>
           </div>
-
           <button
             type="button"
             onClick={handleDownloadAllZip}
-            disabled={isZipping}
-            className="btn-primary bg-yellow-300 text-black py-3.5 px-8 text-sm font-mono font-black flex items-center gap-2 cursor-pointer"
+            disabled={isZipping || !allRendered}
+            className="generate-zip-btn"
           >
-            {isZipping ? 'Creating ZIP...' : '📦 Download Squad ZIP'}
+            {isZipping ? 'Creating ZIP…' : 'Download squad ZIP'}
           </button>
         </div>
       )}
 
-      {/* Badges List & Corresponding Bitmoji Avatar Cards */}
-      <div className="w-full">
+      <div className="generate-badge-list">
         {members.map((member) => (
-          <React.Fragment key={member.id}>
-            <SingleBadgeCard 
-              member={member} 
-              teamName={teamName}
-              frameConfig={frameConfig}
-              onRendered={handleBadgeRendered}
-            />
-
-            {/* Bitmoji Avatar Pass */}
-            <BitmojiAvatarCard 
-              member={member}
-              teamName={teamName}
-              frameConfig={frameConfig}
-            />
-          </React.Fragment>
+          <SingleBadgeCard
+            key={member.id}
+            member={member}
+            teamName={teamName}
+            frameConfig={frameConfig}
+            onRendered={handleBadgeRendered}
+          />
         ))}
       </div>
 
-      {/* Navigation Footer */}
-      <div className="flex flex-wrap justify-center gap-4 mt-8">
-        <button 
-          className="btn-secondary neo-border bg-black text-white px-6 py-3.5 font-mono font-bold" 
+      <div className="generate-foot">
+        <button
+          type="button"
+          className="generate-foot-btn"
           onClick={() => {
             soundFX.playClick();
             navigateTo('frame');
           }}
         >
-          &larr; Change Frame Theme
+          ← Change photo shape
         </button>
-
-        <button 
-          className="btn-primary neo-border bg-yellow-300 text-black px-8 py-3.5 font-mono font-black" 
+        <button
+          type="button"
+          className="generate-foot-btn generate-foot-btn--primary"
           onClick={() => {
             soundFX.playClick();
             navigateTo('home');
           }}
         >
-          Start Over 🚀
+          Start over
         </button>
       </div>
     </div>

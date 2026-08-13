@@ -1,78 +1,59 @@
-/** Frame layouts — shape & export size only; colours live in badgeDraw */
+/** Builder pass — portrait poster format (60 × 90 mm @ ~508 DPI) */
 
-export const FRAME_FILTERS = [
-  { id: 'all', label: 'All' },
-  { id: 'badge', label: 'Badge' },
-  { id: 'portrait', label: 'Portrait' },
-  { id: 'pfp', label: 'PFP' },
-  { id: 'landscape', label: 'Landscape' },
-];
+const DPI = 508;
 
-export const FRAMES = [
-  {
-    id: 'arch-badge',
-    name: 'Arch Badge',
-    desc: 'Cream collectible with arched photo window — the signature HH Goa pass.',
-    category: 'badge',
-    previewAspect: '3 / 4',
-    exportW: 1200,
-    exportH: 1600,
-  },
-  {
-    id: 'portrait-frame',
-    name: 'Portrait Frame',
-    desc: 'Editorial portrait card with event header and clean metadata stack.',
-    category: 'portrait',
-    previewAspect: '3 / 4',
-    exportW: 1200,
-    exportH: 1600,
-  },
-  {
-    id: 'ornate-badge',
-    name: 'Ornate Badge',
-    desc: 'Double-border collectible with gold accent line and arch crop.',
-    category: 'badge',
-    previewAspect: '3 / 4',
-    exportW: 1200,
-    exportH: 1600,
-  },
-  {
-    id: 'slim-badge',
-    name: 'Slim Badge',
-    desc: 'Vertical lanyard format — photo, name, and scannable ID.',
-    category: 'badge',
-    previewAspect: '7 / 12',
-    exportW: 840,
-    exportH: 1440,
-  },
-  {
-    id: 'landscape-frame',
-    name: 'Landscape Frame',
-    desc: 'Wide banner layout for social headers and cover photos.',
-    category: 'landscape',
-    previewAspect: '16 / 9',
-    exportW: 2400,
-    exportH: 1350,
-  },
-  {
-    id: 'circle-pfp',
-    name: 'Circle PFP',
-    desc: 'Square avatar export with circular crop and wave accent.',
-    category: 'pfp',
-    previewAspect: '1 / 1',
-    exportW: 1500,
-    exportH: 1500,
-  },
-];
+function mmToPx(mm) {
+  return Math.round((mm / 25.4) * DPI);
+}
 
-export function getFrame(frameId) {
-  return FRAMES.find((f) => f.id === frameId) || FRAMES[0];
+/** Single size — 2:3 portrait like skate poster reference */
+export const BADGE = {
+  id: 'poster',
+  label: '60 × 90 mm',
+  widthMm: 60,
+  heightMm: 90,
+  designW: 800,
+  designH: 1200,
+  exportW: mmToPx(60),
+  exportH: mmToPx(90),
+  previewW: 400,
+  previewAspect: '2 / 3',
+};
+
+export function getBadgeSize() {
+  return BADGE;
+}
+
+export function getPreviewSize(previewWidth = BADGE.previewW) {
+  return {
+    width: previewWidth,
+    height: Math.round(previewWidth * (BADGE.designH / BADGE.designW)),
+    aspect: BADGE.previewAspect,
+    exportLabel: BADGE.label,
+  };
 }
 
 /** @deprecated */
-export function getTheme(themeId) {
-  return getFrame(themeId);
+export const CARD = BADGE;
+export const BADGE_SIZES = [BADGE];
+export const DEFAULT_BADGE_SIZE = 'poster';
+
+export const PHOTO_SHAPES = [
+  { id: 'square', label: 'Square' },
+  { id: 'round', label: 'Round' },
+];
+
+export function getPhotoShape(shapeId) {
+  return PHOTO_SHAPES.some((s) => s.id === shapeId) ? shapeId : 'square';
 }
 
 /** @deprecated */
+export const FRAMES = [{ id: 'builder-pass', ...BADGE }];
+export const FRAME_FILTERS = [];
+export function getFrame() {
+  return FRAMES[0];
+}
+export function getTheme() {
+  return FRAMES[0];
+}
 export const THEMES = FRAMES;

@@ -1,5 +1,7 @@
 /** Custom hero icons — no emoji, matches HH Goa brand */
 
+import { BRAND_ASSETS } from '../../data/brandAssets';
+
 export const LogoMonogram = () => (
   <svg width="36" height="36" viewBox="0 0 36 36" fill="none" aria-hidden="true">
     <rect width="36" height="36" rx="3" fill="#FFE600" />
@@ -61,6 +63,31 @@ export const IconLotus = () => (
   </svg>
 );
 
-export const GoaScript = () => (
-  <span className="hero-goa-script" aria-label="Goa in Devanagari">गोवा</span>
+export const BrandLockup = ({ className = '', float = true }) => (
+  <span className={`hero-brand-lockup ${className}`.trim()}>
+    <img
+      src={BRAND_ASSETS.hackerHouse}
+      alt=""
+      aria-hidden="true"
+      className="hero-brand-hacker-house"
+      draggable={false}
+    />
+    <span className={`hero-brand-goa-wrap${float ? ' hero-brand-goa-wrap--float' : ''}`}>
+      <img
+        src={BRAND_ASSETS.goaScript}
+        alt="Hacker House Goa"
+        className="hero-brand-goa"
+        draggable={false}
+      />
+    </span>
+  </span>
+);
+
+export const GoaScript = ({ className = '' }) => (
+  <img
+    src={BRAND_ASSETS.goaScript}
+    alt="Goa"
+    className={`hero-brand-goa-inline ${className}`.trim()}
+    draggable={false}
+  />
 );
